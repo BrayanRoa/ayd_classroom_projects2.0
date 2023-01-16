@@ -16,8 +16,10 @@ class PersonSchema(ma.Schema):
     lastnames = fields.String(required=True, validate=validate.Length(min=3, max=30))
     code = fields.String(required=True, validate=validate.Length(min=7))
     img = fields.String()
+    document_type_id = fields.Integer()
+    role_id = fields.Integer()
     
-    document_type_id = fields.Nested('DocumentTypeSchema', only=('name',))
+    document_type = fields.Nested('DocumentTypeSchema', only=('name',))
     role = fields.Nested('RoleSchema', only=('name',))
     
     @post_load
@@ -28,7 +30,7 @@ class PersonSchema(ma.Schema):
     
 
 person_schema = PersonSchema()
-list_person_schema = PersonSchema(many=True)
+list_person_schema = PersonSchema(many=True, exclude=('document_type_id', 'role_id'))
     
     
 

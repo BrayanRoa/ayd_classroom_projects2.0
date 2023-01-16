@@ -5,14 +5,18 @@
 </p>
 
 1. Clone the repository
-2. install the necessary libraries that are in the archive ```requirements.txt```
+2. Create the virtual environment __python3 -m virtualenv venv__
+3. install the necessary libraries that are in the archive ```requirements.txt```
 
 * __pip install -r requirements.txt__
 
-3. enter the following commands
+4. enter the following commands
 
 * __export FLASK_APP=entrypoint__
 * __export FLASK_DEBUG=1__
+* __flask shell__ --> Steps required to create the tables
+  * __from app.db import db__
+  * __db.create_all()__
 * __flask run__
 
 # Stack

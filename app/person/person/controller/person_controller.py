@@ -11,3 +11,6 @@ def get_all_persons():
     except Exception as error:
         return jsonify({'error':error.args}), 404
     
+@person.route('/get_person_by_mail', methods=['GET'])
+def get_person_by_mail():
+    return ''

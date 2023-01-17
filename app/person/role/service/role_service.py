@@ -3,7 +3,7 @@ from app.db import db
 from sqlalchemy.exc import NoResultFound
 from app.person.role.schema.role_schema import list_role_schema
 
-def get_all():
+def findAll():
     roles = db.session.query(RoleEntity).all()
     if not roles:
         raise NoResultFound('no roles registered yet')

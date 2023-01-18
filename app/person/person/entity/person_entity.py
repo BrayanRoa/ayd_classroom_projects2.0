@@ -15,6 +15,8 @@ class PersonEntity(db.Model):
     document_type = db.relationship('DocumentTypeEntity', back_populates='person')
     role = db.relationship('RoleEntity', back_populates='person')
     
+    groups = db.relationship('GroupEntity', secondary='person_group')
+    
     
     
     

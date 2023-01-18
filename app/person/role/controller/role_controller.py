@@ -4,7 +4,6 @@ from app.person.role.service.role_service import findAll
 
 role = Blueprint('role', __name__)
 
-
 @role.route('/', methods=['GET'])
 def get_all_roles():
     try:

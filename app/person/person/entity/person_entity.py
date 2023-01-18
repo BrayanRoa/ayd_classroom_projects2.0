@@ -12,11 +12,13 @@ class PersonEntity(db.Model):
     document_type_id = db.Column(db.Integer, db.ForeignKey('document_type.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     
+    # many to one
     document_type = db.relationship('DocumentTypeEntity', back_populates='person')
     role = db.relationship('RoleEntity', back_populates='person')
     
+    # many to many --> group
     groups = db.relationship('GroupEntity', secondary='person_group')
-    
+    projects = db.relationship('ProjectEntity', secondary='project_person')
     
     
     

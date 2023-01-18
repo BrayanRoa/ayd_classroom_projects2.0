@@ -13,4 +13,4 @@ class ProjectEntity(db.Model):
     
     group = db.relationship('GroupEntity', back_populates='projects')
     
-    
+    persons = db.relationship('PersonEntity', secondary='project_person', viewonly=True)

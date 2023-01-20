@@ -21,3 +21,7 @@ def findPersonOfSubject(subject, group):
         return group_schema.dump(persons)
     except NoResultFound as error:
         raise NoResultFound(error.args)
+    
+# * TODO: TERMINAR
+def create():
+    return ""

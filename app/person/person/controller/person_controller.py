@@ -3,7 +3,8 @@ from app.person.person.service.person_service import (
     findAll, 
     findOneByMail,
     create,
-    findTeachers
+    findTeachers,
+    registerInCourse
     )
 
 person = Blueprint("person", __name__)
@@ -20,7 +21,7 @@ def get_all_persons():
 @person.route("/<mail>", methods=["GET"])
 def get_person_by_mail(mail):
     try:
-        return jsonify({"person": findOneByMail(mail)})
+        return jsonify({"person": findOneByMail(mail)}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404
     
@@ -38,5 +39,14 @@ def create_person():
     try:
         data = request.get_json()
         return jsonify({'person':create(data)}), 201
+    except Exception as error:
+        return jsonify({'msg':error.args})
+
+    
+@person.route('/register_person_in_course', methods=['POST'])
+def register_person_in_course():
+    try:
+        data = request.get_json()
+        return jsonify({'registration':registerInCourse(data)})
     except Exception as error:
         return jsonify({'msg':error.args})

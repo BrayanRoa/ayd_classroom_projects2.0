@@ -60,3 +60,14 @@ def create(data):
         raise ValidationError(error.messages)
     except Exception as error:
         raise Exception(error.args)
+
+
+# * TODO: TERMINAR AQUI LA INSERCIÓN
+# * FIXME: VALIDAR QUE SI YA ESTA CAMBIAR EL ESTADO Y EL CANCELLEB
+def registerInCourse():
+    return ""
+
+
+# * TODO: TERMINAR
+def UpdateImage():
+    return ""

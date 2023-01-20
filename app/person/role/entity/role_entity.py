@@ -1,4 +1,6 @@
 from app.db import db
+from sqlalchemy.orm import mapper
+from ..model.role_dto import RoleDto
 
 class RoleEntity(db.Model):
     
@@ -10,3 +12,6 @@ class RoleEntity(db.Model):
     
     def __repr__(self) -> str:
         return f"id: {self.id}, name:{self.name}"
+    
+    def start_mapper():
+        mapper(RoleDto, RoleEntity)

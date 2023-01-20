@@ -1,4 +1,6 @@
 from app.db import db
+from sqlalchemy.orm import mapper
+from ..model.person_group_dto import PersonGroupDTO
 
 class PersonGroupEntity(db.Model):
     
@@ -9,6 +11,9 @@ class PersonGroupEntity(db.Model):
     cancelled = db.Column(db.Boolean, default=False)
     state = db.Column(db.String(30), default='in process')  
     
+    
+    def start_mapper():
+        mapper(PersonGroupDTO, PersonGroupEntity)
 # *👀 estados permitidos en esta tabla
 # in process
 # approved

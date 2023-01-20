@@ -2,14 +2,39 @@ from app.db import db
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy import and_
 from ..entity.person_group_entity import PersonGroupEntity
-from ..schema.person_groups_schema import list_groups_person_schema
+from ..schema.person_groups_schema import list_person_group_schema, person_group_schema
+from ..model.person_group_dto import PersonGroupDTO
+
+PersonGroupEntity.start_mapper()
 
 
 def findAll():
     persons_groups = db.session.query(PersonGroupEntity).all()
     if not persons_groups:
         raise NoResultFound("no persons in groups registered yet")
-    return list_groups_person_schema.dump(persons_groups)
+    return list_person_group_schema.dump(persons_groups)
+
+
+def activateSubject(mail, group):
+    activate = False
+    person = (
+        db.session.query(PersonGroupEntity)
+        .filter(
+            and_(
+                PersonGroupEntity.institutional_mail == mail,
+                PersonGroupEntity.group_id == group,
+            )
+        )
+        .first()
+    )
+    if not person:
+        return activate
+    
+    person.cancelled = False
+    person.state = "in process"
+    db.session.commit()
+    activate = True
+    return activate
 
 
 def cancelSubject(mail, group):
@@ -25,11 +50,27 @@ def cancelSubject(mail, group):
             .one()
         )
         person.cancelled = True
-        person.state = "failed"
+        person.state = "failed"           
         db.session.commit()
-        return "Subject cancelled"
+        return "subject successfully canceled"
     except NoResultFound as error:
-        raise NoResultFound(error.args)
+        raise NoResultFound("check the person's mail or group")
     except Exception as error:
         raise Exception(error.args)
 
+
+def registered_person(data):
+    try:
+        validate_data = person_group_schema.load(data)
+        db.session.add(
+            PersonGroupDTO(
+                group_id=validate_data["group_id"],
+                institutional_mail=validate_data["institutional_mail"],
+                cancelleb=False,
+                state="in process",
+            )
+        )
+        db.session.commit()
+        return data
+    except Exception as error:
+        raise Exception(error.args)

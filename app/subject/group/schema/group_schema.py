@@ -9,6 +9,7 @@ class GroupSchema(ma.Schema):
     number_of_students = fields.Integer(required=True)
     subject_id = fields.String(required=True, validate=validate.Length(min=7, max=8))
     subject = fields.Nested('SubjectSchema', only=('name',))
+    persons = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code'), many=True)
     
 group_schema = GroupSchema()
 list_group_schema = GroupSchema(many=True)

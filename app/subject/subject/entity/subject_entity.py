@@ -1,5 +1,6 @@
 from app.db import db
-
+from sqlalchemy.orm import mapper
+from ..model.subject_dto import SubjectDto
 
 class SubjectEntity(db.Model):
 
@@ -11,3 +12,6 @@ class SubjectEntity(db.Model):
     
     def __repr__(self) -> str:
         return f"code: {self.code}, name:{self.name}"
+    
+    def start_mapper():
+        mapper(SubjectDto, SubjectEntity)

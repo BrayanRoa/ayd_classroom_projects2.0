@@ -11,7 +11,12 @@ class GroupEntity(db.Model):
 
     subject = db.relationship("SubjectEntity", back_populates="group")
 
-    persons = db.relationship('PersonEntity', secondary='person_group', viewonly=True)
+    persons = db.relationship(
+        'PersonEntity', 
+        primaryjoin="and_(PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in process')",
+        secondary='person_group', 
+        viewonly=True)
+    
     projects = db.relationship('ProjectEntity', back_populates='group')
 
     def __repr__(self) -> str:

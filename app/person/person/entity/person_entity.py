@@ -26,7 +26,7 @@ class PersonEntity(db.Model):
     # many to many --> group
     groups = db.relationship(
         "GroupEntity",
-        primaryjoin="and_(PersonEntity.institutional_mail == PersonGroupEntity.institutional_mail, PersonGroupEntity.cancelled==False)", 
+        primaryjoin="and_(PersonEntity.institutional_mail == PersonGroupEntity.institutional_mail, PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in process')", 
         secondary="person_group", 
         lazy="joined")
     
@@ -34,3 +34,6 @@ class PersonEntity(db.Model):
 
     def start_mapper():
         mapper(PersonDto, PersonEntity)
+        
+    def __repr__(self) -> str:
+        return f"mail: {self.institutional_mail}, name: {self.names}, groups: {self.groups}"

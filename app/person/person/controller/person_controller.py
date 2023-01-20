@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify, request
 from app.person.person.service.person_service import (
     findAll, 
     findOneByMail,
-    create
+    create,
+    findTeachers
     )
 
 person = Blueprint("person", __name__)
@@ -20,6 +21,14 @@ def get_all_persons():
 def get_person_by_mail(mail):
     try:
         return jsonify({"person": findOneByMail(mail)})
+    except Exception as error:
+        return jsonify({"msg": error.args}), 404
+    
+    
+@person.route('/get_teachers', methods=['GET'])
+def get_all_teachers():
+    try:
+        return jsonify({'teachers':findTeachers()}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404
     

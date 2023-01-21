@@ -1,4 +1,6 @@
 from app.db import db
+from sqlalchemy.orm import mapper
+from ..model.group_dto import GroupDTO
 
 
 class GroupEntity(db.Model):
@@ -21,3 +23,6 @@ class GroupEntity(db.Model):
 
     def __repr__(self) -> str:
         return f"id: {self.id}, name: {self.name}, number_of_students: {self.number_of_students}, subject_id: {self.subject_id}"
+
+    def start_mapper():
+        mapper(GroupDTO, GroupEntity)

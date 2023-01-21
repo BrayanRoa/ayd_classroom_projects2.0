@@ -5,6 +5,8 @@ from ..entity.document_type_entity import DocumentTypeEntity
 from ..schema.document_type_schema import list_document_type_schema, document_type_schema
 from ..model.document_type_dto import DocumentTypeDto
 
+DocumentTypeEntity.start_mapper()
+
 def findAll():
     document_types = db.session.query(DocumentTypeEntity).all()
     if not document_types:

@@ -4,8 +4,9 @@ from app.person.person.service.person_service import (
     findOneByMail,
     create,
     findTeachers,
-    registerInCourse
+    registerInCourse,
     )
+import os
 
 person = Blueprint("person", __name__)
 
@@ -50,3 +51,14 @@ def register_person_in_course():
         return jsonify({'registration':registerInCourse(data)})
     except Exception as error:
         return jsonify({'msg':error.args})
+    
+    
+# @person.route('/excel_person', methods=['POST'])
+# def excel_person():
+#     if 'file' not in request.files:
+#         return jsonify({'msg':'there is no file in the request'}), 400
+#     excel = request.files['file']
+#     excel.save(os.path.join('uploads', excel.filename))
+#     createPersonExcel(excel.filename)
+#     return 'ok'
+    

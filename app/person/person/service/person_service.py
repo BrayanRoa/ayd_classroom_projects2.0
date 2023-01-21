@@ -12,6 +12,8 @@ from app.subject.person_group.service.person_group_service import (
     activateSubject,
 )
 from app.subject.person_group.service.person_group_service import registered_person
+import pandas as pd
+import os
 
 
 PersonEntity.start_mapper()
@@ -68,15 +70,13 @@ def create(data):
 
 def registerInCourse(data):
     try:
-        findOneByMail(data["institutional_mail"])  # VALIDO QUE EXISTA LA PERSONA EN DB
         if get_person_of_subject(
             data
         ):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN PROCESS
             return {"msg": "the person is already registered in the matter"}
         else:
             exist = activateSubject(  # SI YA ESTABA PERO LA HABIA PERDIDO O CANCELADO ENTONCES ACTIVAMOS LA MATERIA
-                data["institutional_mail"],
-                data["group_id"]
+                data["institutional_mail"], data["group_id"]
             )
             if exist:
                 return "successfully registered person"
@@ -86,18 +86,21 @@ def registerInCourse(data):
         raise Exception(error.args)
 
 
+def get_person_of_subject(data):
+    try:
+        exist = (
+            db.session.query(PersonEntity)
+            .filter(PersonEntity.institutional_mail == data["institutional_mail"])
+            .one()
+        )
+        for info in exist.groups:
+            if info.id == data["group_id"] and info.subject_id == data["subject_id"]:
+                return True
+        return False
+    except NoResultFound:
+        raise NoResultFound(f"no exist person with email {data['institutional_mail']}")
+
+
 # * TODO: TERMINAR
 def UpdateImage():
     return ""
-
-
-def get_person_of_subject(data):
-    exist = (
-        db.session.query(PersonEntity)
-        .filter(PersonEntity.institutional_mail == data["institutional_mail"])
-        .first()
-    )
-    for info in exist.groups:
-        if info.id == data["group_id"] and info.subject_id == data["subject_id"]:
-            return True
-    return False

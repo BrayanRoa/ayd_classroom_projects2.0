@@ -1,5 +1,6 @@
 from app.db import db
-
+from sqlalchemy.orm import mapper
+from ..model.document_type_dto import DocumentTypeDto
 class DocumentTypeEntity(db.Model):
     
     __tablename__ = 'document_type'
@@ -10,3 +11,6 @@ class DocumentTypeEntity(db.Model):
     
     def __repr__(self) -> str:
         return f"id: {self.id}, name:{self.name}"
+    
+    def start_mapper():
+        mapper(DocumentTypeDto, DocumentTypeEntity)

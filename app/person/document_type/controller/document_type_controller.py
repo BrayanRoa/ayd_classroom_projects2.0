@@ -13,11 +13,11 @@ def get_all_documents_type():
         return jsonify({'msg':error.args}), 404
     
     
-@document_type.route('/create', methods=['GET'])
+@document_type.route('/create', methods=['POST'])
 def create_document_type():
     try:
         data = request.get_json()
-        return jsonify({'document_type':create(data)}), 20
+        return jsonify({'document_type':create(data)}), 201
     except Exception as error:
         return jsonify({'msg':error.args}), 404
         

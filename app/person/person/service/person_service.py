@@ -1,4 +1,5 @@
 from app.db import db
+from app.ext import s3
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
 from app.person.person.entity.person_entity import PersonEntity
@@ -102,5 +103,8 @@ def get_person_of_subject(data):
 
 
 # * TODO: TERMINAR
-def UpdateImage():
-    return ""
+def UpdateImage(file):
+    print(file)
+    s3.upload_file(file.filename, 'ayd-project', file.filename)
+    os.remove(file.filename)
+    return 'file upload'

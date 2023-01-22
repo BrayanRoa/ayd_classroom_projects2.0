@@ -5,6 +5,7 @@ from app.person.person.service.person_service import (
     create,
     findTeachers,
     registerInCourse,
+    UpdateImage
     )
 import os
 
@@ -51,6 +52,15 @@ def register_person_in_course():
         return jsonify({'registration':registerInCourse(data)})
     except Exception as error:
         return jsonify({'msg':error.args})
+    
+    
+@person.route('/upload_image', methods=['POST'])
+def upload_image():
+    if 'file' not in request.files:
+        return jsonify({'msg':'there is no file in the request'}), 400
+    my_file = request.files['file']
+    my_file.save(my_file.filename)
+    return UpdateImage(my_file)
     
     
 # @person.route('/excel_person', methods=['POST'])

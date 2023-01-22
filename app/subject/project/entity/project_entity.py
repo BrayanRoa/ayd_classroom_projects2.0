@@ -1,4 +1,6 @@
 from app.db import db
+from sqlalchemy.orm import mapper
+from ..model.project_dto import ProjectDTO
 
 class ProjectEntity(db.Model):
     
@@ -14,3 +16,7 @@ class ProjectEntity(db.Model):
     group = db.relationship('GroupEntity', back_populates='projects')
     
     persons = db.relationship('PersonEntity', secondary='project_person', viewonly=True)
+    
+    
+    def start_mapper():
+        mapper(ProjectDTO, ProjectEntity)

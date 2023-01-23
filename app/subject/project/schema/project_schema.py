@@ -15,12 +15,11 @@ class ProjectSchema(ma.Schema):
     * on_hold = EN ESPERA --> ESTADO POR DEFECTO HASTA QUE EL PROFESOR LO CAMBIE A IN_PROCESS
     * in_process = EN PROCESO --> PASA A IN_PROCCESS CUANDO EL PROFESOR LO ACTIVE
     * finished = FINALIZADO,
-    * passed = APROVADO,
     * proposal = PROPUESTA
     """
     state = fields.String(
         validate=validate.OneOf(
-            ["in_process", "finished", "passed", "proposal", "on_hold"]
+            ["in_process", "finished", "proposal", "on_hold"]
         ),
     )
     full = fields.Boolean(

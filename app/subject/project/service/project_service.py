@@ -14,6 +14,7 @@ def findAll():
         raise NoResultFound("no projects registered in groups yet")
     return list_project_schema.dump(projects)
 
+
 def create(data):
     project = None
     try:
@@ -24,7 +25,7 @@ def create(data):
                 description=project["description"],
                 group_id=project["group_id"],
                 state=project["state"],
-                number_of_students=project['number_of_students']
+                number_of_students=project["number_of_students"],
             )
         )
         db.session.commit()
@@ -32,10 +33,26 @@ def create(data):
     except ValidationError as error:
         raise ValidationError(error.messages)
     except Exception as error:
-        raise Exception(error.args)    
-    
-    
-    
+        raise Exception(error.args)
+
+
+#? 👀 SI ES FINISHED DEBERIA CAMBIAR EL ESTADO A FALSE??
+def changeStateProject(id, state):
+    try:
+        status = ["in_process", "finished"]
+        if state in status:
+            project = (
+                db.session.query(ProjectEntity).filter(ProjectEntity.id == id).one()
+            )
+            project.state = state
+            db.session.commit()
+            return f"project: '{project.name}' {state}"
+        else:
+            raise Exception(f"status {state} is not valid")
+    except NoResultFound:
+        raise Exception(f"project with id {id} not found")
+
+
 # * TODO: TERMINAR
 def registerExcelOfProjects():
     return ""

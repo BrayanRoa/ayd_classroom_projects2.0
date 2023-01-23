@@ -13,9 +13,15 @@ class ProjectEntity(db.Model):
     state = db.Column(db.String(50))
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     
+    number_of_students = db.Column(db.Integer, default=0)
+    full = db.Column(db.Boolean, default=False)
+    
     group = db.relationship('GroupEntity', back_populates='projects')
     
-    persons = db.relationship('PersonEntity', secondary='project_person', viewonly=True)
+    persons = db.relationship(
+        'PersonEntity',
+        secondary='project_person', 
+        viewonly=True)
     
     
     def start_mapper():

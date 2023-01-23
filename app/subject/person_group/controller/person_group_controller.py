@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..service.person_group_service import findAll, cancelSubject
+from ..service.person_group_service import findAll, changeStateOfSubject
 
 persons_groups = Blueprint("person_group", __name__)
 
@@ -12,9 +12,9 @@ def get_all_person_group():
         return jsonify({"msg": error.args}), 404
 
 
-@persons_groups.route("/cancel_subject/<mail>/<group>", methods=["GET"])
-def cancel_subject(mail, group):
+@persons_groups.route("/change_state_subject/<mail>/<group>/<state>", methods=["GET"])
+def cancel_subject(mail, group, state):
     try:
-        return jsonify({"state": cancelSubject(mail, group)})
+        return jsonify({"state": changeStateOfSubject(mail, group, state)})
     except Exception as error:
         return jsonify({"msg": error.args}), 404

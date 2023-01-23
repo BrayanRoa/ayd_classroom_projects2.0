@@ -73,7 +73,7 @@ def registerInCourse(data):
     try:
         if get_person_of_subject(
             data
-        ):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN PROCESS
+        ):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
             return {"msg": "the person is already registered in the matter"}
         else:
             exist = activateSubject(  # SI YA ESTABA PERO LA HABIA PERDIDO O CANCELADO ENTONCES ACTIVAMOS LA MATERIA

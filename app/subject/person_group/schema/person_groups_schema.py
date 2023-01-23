@@ -11,7 +11,7 @@ class PersonGroupSchema(ma.Schema):
     cancelled = fields.Boolean()
     institutional_mail = fields.String(required=True, validate=validate_mail)
     group_id = fields.Integer()
-    state = fields.String(required=True, validate=validate.OneOf(['in process', 'approved', 'failed']))
+    state = fields.String(required=True, validate=validate.OneOf(['in_process', 'approved', 'cancelleb']))
     subject_id = fields.String()
 
 person_group_schema = PersonGroupSchema()

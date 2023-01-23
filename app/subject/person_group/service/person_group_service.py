@@ -29,15 +29,15 @@ def activateSubject(mail, group):
     )
     if not person:
         return activate
-    
+
     person.cancelled = False
-    person.state = "in process"
+    person.state = "in_process"
     db.session.commit()
     activate = True
     return activate
 
 
-def cancelSubject(mail, group):
+def changeStateOfSubject(mail, group, state):
     try:
         person = (
             db.session.query(PersonGroupEntity)
@@ -49,10 +49,14 @@ def cancelSubject(mail, group):
             )
             .one()
         )
-        person.cancelled = True
-        person.state = "failed"           
+        if state == "cancel":
+            person.cancelled = True
+            person.state = state
+        elif state == "approve":
+            person.cancelled = False
+            person.state = state
         db.session.commit()
-        return "subject successfully canceled"
+        return f"subject successfully {state}"
     except NoResultFound as error:
         raise NoResultFound("check the person's mail or group")
     except Exception as error:
@@ -67,7 +71,7 @@ def registered_person(data):
                 group_id=validate_data["group_id"],
                 institutional_mail=validate_data["institutional_mail"],
                 cancelleb=False,
-                state="in process",
+                state="in_process",
             )
         )
         db.session.commit()

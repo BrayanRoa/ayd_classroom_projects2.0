@@ -26,7 +26,7 @@ class PersonEntity(db.Model):
     # many to many --> group
     groups = db.relationship(
         "GroupEntity",
-        primaryjoin="and_(PersonEntity.institutional_mail == PersonGroupEntity.institutional_mail, PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in process')", 
+        primaryjoin="and_(PersonEntity.institutional_mail == PersonGroupEntity.institutional_mail, PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in_process')", 
         secondary="person_group", 
         lazy="joined")
     

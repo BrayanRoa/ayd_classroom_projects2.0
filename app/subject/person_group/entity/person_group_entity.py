@@ -9,12 +9,12 @@ class PersonGroupEntity(db.Model):
     institutional_mail = db.Column(db.String(100), db.ForeignKey('person.institutional_mail'), primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), primary_key=True)
     cancelled = db.Column(db.Boolean, default=False)
-    state = db.Column(db.String(30), default='in process')  
+    state = db.Column(db.String(30), default='in_process')  
     
     
     def start_mapper():
         mapper(PersonGroupDTO, PersonGroupEntity)
 # *👀 estados permitidos en esta tabla
-# in process
+# in_process
 # approved
 # failed

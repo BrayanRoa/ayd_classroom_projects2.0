@@ -15,7 +15,7 @@ class GroupEntity(db.Model):
 
     persons = db.relationship(
         'PersonEntity', 
-        primaryjoin="and_(PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in process')",
+        primaryjoin="and_(PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in_process')",
         secondary='person_group', 
         viewonly=True)
     

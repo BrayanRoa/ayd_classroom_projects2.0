@@ -36,7 +36,7 @@ def create(data):
         raise Exception(error.args)
 
 
-#? 👀 SI ES FINISHED DEBERIA CAMBIAR EL ESTADO A FALSE??
+# ? 👀 SI ES FINISHED DEBERIA CAMBIAR EL ESTADO A FALSE??
 def changeStateProject(id, state):
     try:
         status = ["in_process", "finished"]
@@ -60,7 +60,7 @@ def registerExcelOfProjects():
 
 def findOneProject(id):
     try:
-        project = db.session.query(ProjectEntity).filter(ProjectEntity.id == id).first()
+        project = db.session.query(ProjectEntity).filter(ProjectEntity.id == id).one()
         return project_schema.dump(project)
     except NoResultFound:
         raise NoResultFound(f"there is no project with id {id}")

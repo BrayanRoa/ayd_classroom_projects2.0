@@ -18,7 +18,7 @@ def get_all_persons():
     ---
     tags:
       - Person
-
+      
     definitions:
        Person:
         type: object
@@ -68,7 +68,7 @@ def get_all_persons():
 
 @person.route("/<mail>", methods=["GET"])
 def get_person_by_mail(mail):
-    """Returns a person by email
+    """Look for a person by institutional mail
     ---
     tags:
       - Person
@@ -117,7 +117,7 @@ def get_person_by_mail(mail):
 
     responses:
       200:
-        description: A list of Person
+        description: One person by institutional_mail
         schema:
           $ref: '#/definitions/Person'
     """
@@ -228,6 +228,39 @@ def create_person():
 
 @person.route("/register_person_in_course", methods=["POST"])
 def register_person_in_course():
+    """Registration of Person in a Group of a subject
+    ---
+    tags:
+      - Person
+
+    description:
+      when a person is registered, the state must be 'in_process'
+      
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/PersonInfo'
+    definitions:
+       PersonInfo:
+        type: object
+        properties:
+          institutional_mail:
+            type: string
+          subject_id:
+            type: string
+          group_id: 
+            type: number
+          state:
+            type: string
+
+    responses:
+      201:
+        description: Registration of Person in a Group of a subject
+        schema:
+          $ref: '#/definitions/PersonInfo'
+    """
     try:
         data = request.get_json()
         return jsonify({"registration": registerInCourse(data)})
@@ -235,13 +268,34 @@ def register_person_in_course():
         return jsonify({"msg": error.args})
 
 
-@person.route("/upload_image", methods=["POST"])
-def upload_image():
+#* TODO: ACOMODAR PARA COLOCAR EL CORREO Y QUE DE RETORNE EL URL PARA ALMACENARLO EN LA BASE DE DATOS
+@person.route("/upload_image/<mail>", methods=["POST"])
+def upload_image(mail):
+    """Update a person's profile picture
+    ---
+    tags:
+      - Person
+    parameters:
+      - name: mail
+        in: path
+        description: Identifier person
+        required: true
+        type: string
+      - name: file
+        in: formData
+        description: The uploaded file data
+        required: true
+        type: file
+          
+    responses:
+      200:
+        description: A File
+    """
     if "file" not in request.files:
         return jsonify({"msg": "there is no file in the request"}), 400
     my_file = request.files["file"]
     my_file.save(my_file.filename)
-    return UpdateImage(my_file)
+    return UpdateImage(my_file, mail)
 
 
 # @person.route('/excel_person', methods=['POST'])

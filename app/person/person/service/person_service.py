@@ -102,8 +102,8 @@ def get_person_of_subject(data):
         raise NoResultFound(f"no exist person with email {data['institutional_mail']}")
 
 
-def UpdateImage(file):
-    print(file)
+def UpdateImage(file,mail):
+    print(file, mail)
     s3.upload_file(file.filename, "ayd-project", file.filename)
     os.remove(file.filename)
-    return "file upload"
+    return {"msg":"file upload"}

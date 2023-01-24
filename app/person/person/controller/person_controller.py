@@ -5,7 +5,7 @@ from app.person.person.service.person_service import (
     create,
     findTeachers,
     registerInCourse,
-    UpdateImage,
+    updateImage,
 )
 import os
 
@@ -291,11 +291,18 @@ def upload_image(mail):
       200:
         description: A File
     """
-    if "file" not in request.files:
+    try:
+      if "file" not in request.files:
         return jsonify({"msg": "there is no file in the request"}), 400
-    my_file = request.files["file"]
-    my_file.save(my_file.filename)
-    return UpdateImage(my_file, mail)
+      my_file = request.files["file"]
+      return jsonify({"URL":updateImage(my_file, mail)})
+    except Exception as error:
+      return jsonify({"msg": error.args})
+    # if "file" not in request.files:
+    #     return jsonify({"msg": "there is no file in the request"}), 400
+    # my_file = request.files["file"]
+    # my_file.save(my_file.filename)
+    # return UpdateImage(my_file, mail)
 
 
 # @person.route('/excel_person', methods=['POST'])

@@ -13,8 +13,8 @@ from app.subject.person_group.service.person_group_service import (
     activateSubject,
 )
 from app.subject.person_group.service.person_group_service import registered_person
-import pandas as pd
 import os
+from cloudinary.uploader import upload, destroy
 
 
 PersonEntity.start_mapper()
@@ -102,8 +102,34 @@ def get_person_of_subject(data):
         raise NoResultFound(f"no exist person with email {data['institutional_mail']}")
 
 
-def UpdateImage(file,mail):
-    print(file, mail)
-    s3.upload_file(file.filename, "ayd-project", file.filename)
-    os.remove(file.filename)
-    return {"msg":"file upload"}
+def updateImage(file, mail):
+    try:
+        image = (
+            db.session.query(PersonEntity)
+            .filter(PersonEntity.institutional_mail == mail)
+            .one()
+        )
+        print(image.img)
+        if image.img != "":
+            url = image.img.split('/')
+            id_img = url[-1].split('.')
+            destroy(f"classroom-projects/{id_img[0]}")
+        response = upload(file, folder="classroom-projects")
+        image.img = response["url"]
+        db.session.commit()
+        return image.img
+    except NoResultFound as error:
+        raise NoResultFound(f"no exist person with email {mail}")
+    except Exception as error:
+        raise Exception(error.args)
+
+
+# * TODO: VOY A UTILIZAR MEJOR CLOUDINARY POR TEMAS DE COSTOS
+# def UpdateImage(file,mail):
+#     print(file, mail)
+#     s3.upload_file(file.filename, "ayd-project", file.filename)
+#     s3.put_object_acl(Bucket="ayd-project", Key=file.filename, ACL='public-read')
+#     url = s3.generate_presigned_post("ayd-project", file.filename)
+
+#     os.remove(file.filename)
+#     return {"msg":url}

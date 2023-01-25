@@ -2,7 +2,7 @@ from app.db import db
 from sqlalchemy.exc import NoResultFound
 from marshmallow import ValidationError
 from ..entity.project_entity import ProjectEntity
-from ..schema.project_schema import list_project_schema, project_schema
+from ..schema.project_schema import list_project_schema, project_schema, list_project_without_persons_schema
 from ..model.project_dto import ProjectDTO
 
 ProjectEntity.start_mapper()
@@ -12,7 +12,7 @@ def findAll():
     projects = db.session.query(ProjectEntity).all()
     if not projects:
         raise NoResultFound("no projects registered in groups yet")
-    return list_project_schema.dump(projects)
+    return list_project_without_persons_schema.dump(projects)
 
 
 def create(data):

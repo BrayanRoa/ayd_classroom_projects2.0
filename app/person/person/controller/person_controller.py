@@ -268,8 +268,7 @@ def register_person_in_course():
         return jsonify({"msg": error.args})
 
 
-#* TODO: ACOMODAR PARA COLOCAR EL CORREO Y QUE DE RETORNE EL URL PARA ALMACENARLO EN LA BASE DE DATOS
-@person.route("/upload_image/<mail>", methods=["POST"])
+@person.route("/upload_image/<mail>", methods=["PATCH"])
 def upload_image(mail):
     """Update a person's profile picture
     ---

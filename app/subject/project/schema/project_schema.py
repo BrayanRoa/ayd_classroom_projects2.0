@@ -40,3 +40,4 @@ class ProjectSchema(ma.Schema):
 
 project_schema = ProjectSchema()
 list_project_schema = ProjectSchema(many=True)
+list_project_without_persons_schema = ProjectSchema(many=True, exclude=('persons',))

@@ -14,6 +14,54 @@ def get_all_groups():
 
 @group.route("/<subject>/<group>")
 def get_all_person_of_subject(subject, group):
+    """Get all people in a group
+    ---
+    tags:
+      - Group
+      
+    parameters:
+      - name: subject
+        in: path
+        type: string
+        required: true
+        description: Identifier subject
+
+      - name: group
+        in: path
+        type: number
+        required: true
+        description: Identifier group
+        
+    definitions:
+       SubjectGroup:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          number_of_students:
+            type: number
+          persons:
+            type: object
+            properties:
+              code:
+                type: string
+              name:
+                type: string  
+              lastnames:
+                type: string
+          subject:
+            type: string
+          subject_id:
+            type: string
+    
+    responses:
+      200:
+        description: Get all people in a group
+        schema:
+          $ref: '#/definitions/SubjectGroup'
+    """
     try:
         return jsonify({"persons": findPersonOfSubject(subject, group)})
     except Exception as error:
@@ -22,6 +70,35 @@ def get_all_person_of_subject(subject, group):
 
 @group.route("/create", methods=["POST"])
 def create_group():
+    """add group to subject
+    ---
+    tags:
+      - Group
+
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/GroupInfo'
+          
+    definitions:
+       GroupInfo:
+        type: object
+        properties:
+          name:
+            type: string
+          number_of_persons:
+            type: number
+          subject_id:
+            type: string
+          
+    responses:
+      201:
+        description: a new group in subject
+        schema:
+          $ref: '#/definitions/GroupInfo'
+    """
     try:
         data = request.get_json()
         return jsonify({"group": create(data)})

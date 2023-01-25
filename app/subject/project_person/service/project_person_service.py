@@ -23,6 +23,7 @@ def findAll():
 
 
 # * HARIA FALTA VALIDAR QUE LA PERSONA ESTE REGISTRADA EN ESA GRUPO Y EN ESA MATERIA
+# * MOSTRAR MENSAJE SI LA PERSONA YA ESTA REGISTRADA EN ESE PROYECTO
 def registerPersonInProject(data):
     project_person = None
     try:

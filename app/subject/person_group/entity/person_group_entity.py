@@ -17,4 +17,4 @@ class PersonGroupEntity(db.Model):
 # *👀 estados permitidos en esta tabla
 # in_process
 # approved
-# failed
+# cancel

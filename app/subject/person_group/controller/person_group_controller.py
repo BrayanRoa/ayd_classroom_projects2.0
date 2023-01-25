@@ -13,7 +13,44 @@ def get_all_person_group():
 
 
 @persons_groups.route("/change_state_subject/<mail>/<group>/<state>", methods=["GET"])
-def cancel_subject(mail, group, state):
+def change_state_subject(mail, group, state):
+    """Change group status to 'approve' or 'cancel'
+    ---
+    tags:
+      - Group
+      
+    parameters:
+      - name: mail
+        in: path
+        type: string
+        required: true
+        description: Identifier person
+
+      - name: group
+        in: path
+        type: number
+        required: true
+        description: Identifier group
+
+      - name: state
+        in: path
+        type: string
+        required: true
+        description: state group - (approve or cancel)
+        
+    definitions:
+       SubjectGroup:
+        type: object
+        properties:
+          state:
+            type: string
+    
+    responses:
+      200:
+        description: Get all people in a group
+        schema:
+          $ref: '#/definitions/SubjectGroup'
+    """
     try:
         return jsonify({"state": changeStateOfSubject(mail, group, state)})
     except Exception as error:

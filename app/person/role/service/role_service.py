@@ -18,7 +18,7 @@ def findAll():
 def create(data):
     role = None
     try:
-        role = role_schema.dump(data)
+        role = role_schema.load(data)
         db.session.add(RoleDto(name=role["name"]))
         db.session.commit()
         return role

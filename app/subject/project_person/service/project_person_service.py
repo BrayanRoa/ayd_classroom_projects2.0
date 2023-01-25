@@ -11,7 +11,6 @@ from app.person.person.service.person_service import findOneByMail
 from app.subject.project.service.project_service import findOneProject
 from ..model.project_person_dto import ProjectPersonDTO
 
-
 ProjectPersonEntity.start_mapper()
 
 
@@ -23,13 +22,15 @@ def findAll():
 
 
 # * HARIA FALTA VALIDAR QUE LA PERSONA ESTE REGISTRADA EN ESA GRUPO Y EN ESA MATERIA
-# * MOSTRAR MENSAJE SI LA PERSONA YA ESTA REGISTRADA EN ESE PROYECTO
 def registerPersonInProject(data):
     project_person = None
     try:
         project_person = project_person_schema.load(data)
         findOneByMail(project_person["institutional_mail"])
         findOneProject(project_person["project_id"])
+        existePersonInProject(
+            project_person["institutional_mail"], project_person["project_id"]
+        )
         db.session.add(
             ProjectPersonDTO(
                 institutional_mail=project_person["institutional_mail"],
@@ -65,3 +66,18 @@ def withdrawFromProject(data):
         raise ValidationError(error.args)
     except NoResultFound:
         raise NoResultFound("person or project not found")
+
+
+def existePersonInProject(mail, project):
+    exist = (
+        db.session.query(ProjectPersonEntity)
+        .filter(
+            and_(
+                ProjectPersonEntity.institutional_mail == mail,
+                ProjectPersonEntity.project_id == project,
+            )
+        )
+        .first()
+    )
+    if exist:
+        raise Exception("the person is already registered in this project")

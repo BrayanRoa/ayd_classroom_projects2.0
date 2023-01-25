@@ -21,6 +21,8 @@ class GroupEntity(db.Model):
     
     projects = db.relationship('ProjectEntity', back_populates='group')
 
+    task = db.relationship('TaskEntity', back_populates='group')
+    
     def __repr__(self) -> str:
         return f"id: {self.id}, name: {self.name}, number_of_students: {self.number_of_students}, subject_id: {self.subject_id}"
 

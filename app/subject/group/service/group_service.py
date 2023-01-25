@@ -1,5 +1,9 @@
 from app.db import db
-from app.subject.group.schema.group_schema import list_group_schema, group_schema
+from app.subject.group.schema.group_schema import (
+    list_group_schema,
+    group_schema,
+    list_group_task_schema
+    )
 from app.subject.group.entity.group_entity import GroupEntity
 from sqlalchemy.exc import NoResultFound
 from marshmallow import ValidationError
@@ -57,3 +61,12 @@ def findGroup(subject, group_name):
     if group:
         return True
     return False
+
+
+def findAllTaks(group_id):
+    try:
+        task = db.session.query(GroupEntity).filter(GroupEntity.id == group_id).one()
+        print(task.persons)
+        return list_group_task_schema.dump(task)
+    except NoResultFound:
+        raise NoResultFound('verify the group')

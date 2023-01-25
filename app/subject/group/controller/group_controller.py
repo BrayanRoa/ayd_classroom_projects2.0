@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..service.group_service import findAll, findPersonOfSubject, create, findAllTaks
+from ..service.group_service import findAll, findPersonOfSubject, create
 
 group = Blueprint("group", __name__)
 
@@ -102,13 +102,5 @@ def create_group():
     try:
         data = request.get_json()
         return jsonify({"group": create(data)})
-    except Exception as error:
-        return jsonify({"msg": error.args}), 404
-
-
-@group.route("/get_all_task/<group>", methods=["GET"])
-def get_all_tasks_of_group(group):
-    try:
-        return jsonify({"group": findAllTaks(group)}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404

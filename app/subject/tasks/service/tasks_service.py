@@ -11,3 +11,13 @@ def findAll():
         raise NoResultFound('no homework yet')
     except Exception:
         raise Exception("")
+    
+    
+def findByGroupId(id):
+    try:
+        task = db.session.query(TaskEntity).filter(TaskEntity.group_id == id).all()
+        return list_task_schema.dump(task)
+    except NoResultFound:
+        raise NoResultFound('no homework yet')
+    except Exception:
+        raise Exception("")

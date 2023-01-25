@@ -12,4 +12,4 @@ class TaskSchema(ma.Schema):
     group = fields.Nested('GroupSchema', only=('id', 'name'), many=False)
     
 task_schema = TaskSchema()
-list_task_schema = TaskSchema(many=True)
+list_task_schema = TaskSchema(many=True, exclude=('group', 'group_id'))

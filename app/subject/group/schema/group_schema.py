@@ -14,4 +14,3 @@ class GroupSchema(ma.Schema):
     
 group_schema = GroupSchema(exclude=('task',))
 list_group_schema = GroupSchema(many=True, exclude=('task',))
-list_group_task_schema = GroupSchema(exclude=('persons', 'subject'))

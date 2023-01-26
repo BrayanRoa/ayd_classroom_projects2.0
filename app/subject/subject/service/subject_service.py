@@ -22,8 +22,8 @@ def findOneByCode(code):
             db.session.query(SubjectEntity).filter(SubjectEntity.code == code).one()
         )
         return subject_schema.dump(subject)
-    except NoResultFound as error:
-        raise NoResultFound(error.args)
+    except NoResultFound:
+        raise NoResultFound(f"Subject by code {code} not found")
 
 
 def create(data):

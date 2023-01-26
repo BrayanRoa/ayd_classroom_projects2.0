@@ -7,6 +7,7 @@ from app.subject.group.entity.group_entity import GroupEntity
 from sqlalchemy.exc import NoResultFound
 from marshmallow import ValidationError
 from ..model.group_dto import GroupDTO
+from ...subject.service.subject_service import findOneByCode
 
 GroupEntity.start_mapper()
 
@@ -18,22 +19,23 @@ def findAll():
     return list_group_schema.dump(groups)
 
 
-def findPersonOfSubject(subject, group):
+def findPersonOfGroup(group):
     try:
         persons = (
             db.session.query(GroupEntity)
-            .filter(GroupEntity.id == group, GroupEntity.subject_id == subject)
+            .filter(GroupEntity.id == group)
             .one()
         )
         return group_schema.dump(persons)
     except NoResultFound:
-        raise NoResultFound("verify the group and subject code")
+        raise NoResultFound(f"Group with id {group} not found")
 
 
 def create(data):
     group = None
     try:
         group = group_schema.load(data)
+        findOneByCode(group["subject_id"])
         if findGroup(group["subject_id"], group["name"]):
             return f"the group {group['name']} already exist in subject {group['subject_id']}"
         db.session.add(

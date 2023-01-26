@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..service.group_service import findAll, findPersonOfSubject, create
+from ..service.group_service import findAll, findPersonOfGroup, create
 
 group = Blueprint("group", __name__)
 
@@ -12,20 +12,14 @@ def get_all_groups():
         return jsonify({"msg": error.args}), 404
 
 
-@group.route("/<subject>/<group>")
-def get_all_person_of_subject(subject, group):
+@group.route("/<group>")
+def get_all_person_of_subject(group):
     """Get all people in a group
     ---
     tags:
       - Group
 
     parameters:
-      - name: subject
-        in: path
-        type: string
-        required: true
-        description: Identifier subject
-
       - name: group
         in: path
         type: number
@@ -63,7 +57,7 @@ def get_all_person_of_subject(subject, group):
           $ref: '#/definitions/SubjectGroup'
     """
     try:
-        return jsonify({"persons": findPersonOfSubject(subject, group)})
+        return jsonify({"persons": findPersonOfGroup(group)})
     except Exception as error:
         return jsonify({"msg": error.args}), 404
 
@@ -88,7 +82,7 @@ def create_group():
         properties:
           name:
             type: string
-          number_of_persons:
+          number_of_students:
             type: number
           subject_id:
             type: string

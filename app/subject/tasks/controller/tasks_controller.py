@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..service.tasks_service import findAll, findByGroupId
+from ..service.tasks_service import findAll, findByGroupId, deleteTask
 
 task = Blueprint('task', __name__)
 
@@ -40,7 +40,6 @@ def task_of_group(group):
           expired_date:
             type: string
           
-
     responses:
       200:
         description: Get all task of one group
@@ -51,3 +50,41 @@ def task_of_group(group):
         return jsonify({'msg':findByGroupId(group)}), 200
     except Exception as error:
         return jsonify({'msg':error.args}), 404 
+    
+
+@task.route('/delete_task/<id>', methods=['DELETE'])
+def delete_task(id):
+    """Delete one task by id
+    ---
+    tags:
+      - Tasks
+      
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identifier task
+        
+    definitions:
+       DeleteTask:
+        type: object
+        properties:
+          msg:
+            type: string
+          
+    responses:
+      200:
+        description: Delete one task
+        schema:
+          $ref: '#/definitions/DeleteTask'
+    """
+    try:
+        return jsonify({'msg':deleteTask(id)}), 200
+    except Exception as error:
+        return jsonify({'msg':error.args}), 404 
+      
+  
+#* TODO: CREAR TAREA
+
+
+#* TODO: ACTUALIZAR TAREA?

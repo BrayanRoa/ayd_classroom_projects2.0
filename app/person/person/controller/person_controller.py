@@ -297,12 +297,9 @@ def upload_image(mail):
       return jsonify({"URL":updateImage(my_file, mail)})
     except Exception as error:
       return jsonify({"msg": error.args})
-    # if "file" not in request.files:
-    #     return jsonify({"msg": "there is no file in the request"}), 400
-    # my_file = request.files["file"]
-    # my_file.save(my_file.filename)
-    # return UpdateImage(my_file, mail)
 
+
+#* UPDATE PERSON
 
 # @person.route('/excel_person', methods=['POST'])
 # def excel_person():

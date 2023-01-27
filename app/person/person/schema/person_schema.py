@@ -32,7 +32,8 @@ class PersonSchema(ma.Schema):
 
 person_schema = PersonSchema()
 person_schema_out = PersonSchema(exclude=('document_type_id', 'role_id'))
-list_person_schema = PersonSchema(many=True, exclude=('document_type_id', 'role_id'))
+list_person_schema = PersonSchema(many=True, exclude=('document_type_id',))
+# list_person_schema = PersonSchema(many=True, exclude=('document_type_id', 'role_id'))
     
     
 

@@ -228,7 +228,7 @@ def create_person():
 
 @person.route("/register_person_in_course", methods=["POST"])
 def register_person_in_course():
-    """Registration of Person in a Group of a subject
+    """Register person in group
     ---
     tags:
       - Person
@@ -241,9 +241,10 @@ def register_person_in_course():
         in: body
         required: true
         schema:
-          $ref: '#/definitions/PersonInfo'
+          $ref: '#/definitions/PersonGroupInfo'
+          
     definitions:
-       PersonInfo:
+       PersonGroupInfo:
         type: object
         properties:
           institutional_mail:
@@ -257,9 +258,9 @@ def register_person_in_course():
 
     responses:
       201:
-        description: Registration of Person in a Group of a subject
+        description: Register person in group
         schema:
-          $ref: '#/definitions/PersonInfo'
+          $ref: '#/definitions/PersonGroupInfo'
     """
     try:
         data = request.get_json()

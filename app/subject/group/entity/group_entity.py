@@ -1,7 +1,7 @@
 from app.db import db
 from sqlalchemy.orm import mapper
 from ..model.group_dto import GroupDTO
-
+from datetime import datetime
 
 class GroupEntity(db.Model):
     __tablename__ = "group"
@@ -24,6 +24,9 @@ class GroupEntity(db.Model):
     task = db.relationship(
         'TaskEntity',
         back_populates='group')
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self) -> str:
         return f"id: {self.id}, name: {self.name}, number_of_students: {self.number_of_students}, subject_id: {self.subject_id}"

@@ -1,7 +1,7 @@
 from app.db import db
 from sqlalchemy.orm import mapper
 from ..model.person_group_dto import PersonGroupDTO
-
+from datetime import datetime
 class PersonGroupEntity(db.Model):
     
     __tablename__ = 'person_group'
@@ -10,7 +10,8 @@ class PersonGroupEntity(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), primary_key=True)
     cancelled = db.Column(db.Boolean, default=False)
     state = db.Column(db.String(30), default='in_process')  
-    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def start_mapper():
         mapper(PersonGroupDTO, PersonGroupEntity)

@@ -12,12 +12,12 @@ def get_all_person_group():
         return jsonify({"msg": error.args}), 404
 
 
-@persons_groups.route("/change_state_subject/<mail>/<group>/<state>", methods=["GET"])
+@persons_groups.route("/change_state_subject/<mail>/<group>/<state>", methods=["PATCH"])
 def change_state_subject(mail, group, state):
-    """Change group status to 'approve' or 'cancel'
+    """Cancel or approve person group
     ---
     tags:
-      - Group
+      - Person
       
     parameters:
       - name: mail

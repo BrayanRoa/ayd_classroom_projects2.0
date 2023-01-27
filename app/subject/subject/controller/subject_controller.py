@@ -120,3 +120,6 @@ def create_subject():
         return jsonify({"subject": create(data)}), 201
     except Exception as error:
         return jsonify({"msg": error.args}), 404
+      
+      
+#* TODO: UPDATE SUBJECT

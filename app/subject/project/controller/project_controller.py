@@ -202,6 +202,7 @@ def change_state_project(id, state):
         return jsonify({"msg": error.args}), 404
 
 
+#* TODO: UPDATE PROJECT
 # @project.route('/propose_project/<state>', methods=['POST'])
 # def propose_project(state):
 #     try:

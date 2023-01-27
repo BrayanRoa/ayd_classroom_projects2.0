@@ -1,6 +1,7 @@
 from app.db import db
 from sqlalchemy.orm import mapper
 from ..model.project_dto import ProjectDTO
+from datetime import datetime
 
 class ProjectEntity(db.Model):
     
@@ -23,6 +24,8 @@ class ProjectEntity(db.Model):
         secondary='project_person', 
         viewonly=True)
     
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def start_mapper():
         mapper(ProjectDTO, ProjectEntity)

@@ -13,17 +13,15 @@ from app.subject.person_group.service.person_group_service import (
     activateSubject,
 )
 from app.subject.person_group.service.person_group_service import registered_person
-import os
 from cloudinary.uploader import upload, destroy
 from sqlalchemy.orm import joinedload
 from ....subject.person_group.entity.person_group_entity import PersonGroupEntity
-
+from sqlalchemy import or_
 
 PersonEntity.start_mapper()
 
 
 def findAll():
-    # persons = db.session.query(PersonEntity).all()
     try:
         persons = (
             db.session.query(PersonEntity)
@@ -39,7 +37,7 @@ def findAll():
         raise NoResultFound("no people registered yet")
 
 
-def findOneByMail(mail):
+def findOneByMail(term):
     try:
         person = (
             db.session.query(PersonEntity)
@@ -48,12 +46,14 @@ def findOneByMail(mail):
                     PersonGroupEntity.group
                 )
             )
-            .filter(PersonEntity.institutional_mail == mail)
+            .filter(
+                or_(PersonEntity.institutional_mail == term, PersonEntity.code == term)
+            )
             .one()
         )
         return person_schema_out.dump(person)
     except NoResultFound:
-        raise NoResultFound(f"no exist person with email {mail}")
+        raise NoResultFound(f"The person with search term {term} does not exist")
 
 
 def findTeachers():
@@ -87,7 +87,9 @@ def create(data):
 
 def registerInCourse(data):
     try:
-        if get_person_of_subject(data):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
+        if get_person_of_subject(
+            data
+        ):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
             return {"msg": "the person is already registered in the matter"}
         else:
             exist = activateSubject(  # SI YA ESTABA PERO LA HABIA PERDIDO O CANCELADO ENTONCES ACTIVAMOS LA MATERIA
@@ -114,8 +116,12 @@ def get_person_of_subject(data):
             .one()
         )
         for info in exist.person_group:
-            if info.group.id == data["group_id"] and info.group.subject_id == data["subject_id"] and info.cancelled == False:
-               return True
+            if (
+                info.group.id == data["group_id"]
+                and info.group.subject_id == data["subject_id"]
+                and info.cancelled == False
+            ):
+                return True
         return False
     except NoResultFound:
         raise NoResultFound(f"no exist person with email {data['institutional_mail']}")

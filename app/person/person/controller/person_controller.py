@@ -14,7 +14,7 @@ person = Blueprint("person", __name__)
 
 @person.route("/", methods=["GET"])
 def get_all_persons():
-    """Returning list all persons
+    """Returning list all persons ✅
     ---
     tags:
       - Person
@@ -38,16 +38,6 @@ def get_all_persons():
             properties:
               name:
                 type: string
-          groups:
-            type: object
-            properties:
-              name: 
-                type: string
-              subject:
-                type: object
-                properties:
-                  name: 
-                    type: string
           role:
             type: object
             properties:
@@ -66,19 +56,19 @@ def get_all_persons():
         return jsonify({"msg": error.args}), 404
 
 
-@person.route("/<mail>", methods=["GET"])
-def get_person_by_mail(mail):
-    """Look for a person by institutional mail
+@person.route("/<term>", methods=["GET"])
+def get_person_by_mail(term):
+    """get person by institutional mail ✅
     ---
     tags:
       - Person
       
     parameters:
-      - name: mail
+      - name: term
         in: path
         type: string
         required: true
-        description: Identifier person
+        description: institutional mail or code
 
     definitions:
        LookPerson:
@@ -131,7 +121,7 @@ def get_person_by_mail(mail):
           $ref: '#/definitions/LookPerson'
     """
     try:
-        return jsonify({"person": findOneByMail(mail)}), 200
+        return jsonify({"person": findOneByMail(term)}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404
 
@@ -182,7 +172,7 @@ def get_all_teachers():
 
 @person.route("/create", methods=["POST"])
 def create_person():
-    """add a new person
+    """add a new person ✅
     ---
     tags:
       - Person

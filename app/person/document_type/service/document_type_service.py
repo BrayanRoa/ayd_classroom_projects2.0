@@ -25,3 +25,16 @@ def create(data):
         raise ValidationError(error.args)
     except Exception as error:
         raise Exception(error.args)
+    
+
+def update(id, data):
+    try:
+        document_type = db.session.query(DocumentTypeEntity).filter_by(id= id).one()
+        document_type.name = data['name']
+        db.session.commit()
+        return document_type_schema.dump(document_type)
+    except NoResultFound:
+        raise NoResultFound('Document type with id {id} not found')
+    except Exception as error:
+        raise Exception(error.args)
+        

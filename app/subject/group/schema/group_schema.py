@@ -12,5 +12,7 @@ class GroupSchema(ma.Schema):
     persons = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code'), many=True)
     task = fields.Nested('TaskSchema', exclude=('group',), many=True)
     
+    person_group = fields.Nested('PersonGroupSchema', many=True, only=('cancelled', 'state', 'person'))
+    
 group_schema = GroupSchema(exclude=('task',))
 list_group_schema = GroupSchema(many=True, exclude=('task',))

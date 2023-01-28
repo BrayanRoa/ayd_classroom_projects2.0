@@ -21,7 +21,7 @@ class PersonSchema(ma.Schema):
     
     document_type = fields.Nested('DocumentTypeSchema', only=('name',))
     role = fields.Nested('RoleSchema', only=('name',))
-    groups = fields.Nested('GroupSchema', only=('name', 'subject'), many=True)
+    person_group = fields.Nested('PersonGroupSchema', many=True, only=('cancelled', 'state', 'group'))
     
     @post_load
     def lower_names(self, in_data, **kwargs):
@@ -32,7 +32,7 @@ class PersonSchema(ma.Schema):
 
 person_schema = PersonSchema()
 person_schema_out = PersonSchema(exclude=('document_type_id', 'role_id'))
-list_person_schema = PersonSchema(many=True, exclude=('document_type_id',))
+list_person_schema = PersonSchema(many=True, exclude=('document_type_id','role_id', 'person_group'))
 # list_person_schema = PersonSchema(many=True, exclude=('document_type_id', 'role_id'))
     
     

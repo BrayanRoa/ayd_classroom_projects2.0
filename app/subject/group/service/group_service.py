@@ -6,8 +6,10 @@ from app.subject.group.schema.group_schema import (
 from app.subject.group.entity.group_entity import GroupEntity
 from sqlalchemy.exc import NoResultFound
 from marshmallow import ValidationError
+from sqlalchemy.orm import joinedload
 from ..model.group_dto import GroupDTO
 from ...subject.service.subject_service import findOneByCode
+from ...person_group.entity.person_group_entity import PersonGroupEntity
 
 GroupEntity.start_mapper()
 
@@ -21,11 +23,18 @@ def findAll():
 
 def findPersonOfGroup(group):
     try:
-        persons = (
-            db.session.query(GroupEntity)
+        # persons = (
+        #     db.session.query(GroupEntity)
+        #     .filter(GroupEntity.id == group)
+        #     .one()
+        # )
+        persons = (db.session.query(GroupEntity).options(
+                joinedload(GroupEntity.person_group).joinedload(
+                    PersonGroupEntity.person
+                )
+            )
             .filter(GroupEntity.id == group)
-            .one()
-        )
+            .one())
         return group_schema.dump(persons)
     except NoResultFound:
         raise NoResultFound(f"Group with id {group} not found")

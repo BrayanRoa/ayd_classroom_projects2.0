@@ -8,10 +8,13 @@ def validate_mail(email):
 
 class PersonGroupSchema(ma.Schema):
 
-    cancelled = fields.Boolean()
-    institutional_mail = fields.String(required=True, validate=validate_mail)
+    id = fields.Integer()
+    person_id = fields.String()
     group_id = fields.Integer()
+    cancelled = fields.Boolean()
     state = fields.String(required=True, validate=validate.OneOf(['in_process', 'approved', 'cancelleb']))
+    person = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code', 'institutional_mail'))
+    group = fields.Nested('GroupSchema', only=('id', 'name', 'subject'))
     subject_id = fields.String()
 
 person_group_schema = PersonGroupSchema()

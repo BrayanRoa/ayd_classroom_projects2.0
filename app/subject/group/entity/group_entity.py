@@ -13,11 +13,12 @@ class GroupEntity(db.Model):
 
     subject = db.relationship("SubjectEntity", back_populates="group")
 
-    persons = db.relationship(
-        'PersonEntity', 
-        primaryjoin="and_(PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in_process')",
-        secondary='person_group', 
-        viewonly=True)
+    # persons = db.relationship(
+    #     'PersonEntity', 
+    #     primaryjoin="and_(PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in_process')",
+    #     secondary='person_group', 
+    #     viewonly=True)
+    person_group = db.relationship('PersonGroupEntity', back_populates=('group'))
     
     projects = db.relationship('ProjectEntity', back_populates='group')
 

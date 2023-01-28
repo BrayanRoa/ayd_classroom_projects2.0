@@ -2,6 +2,7 @@ from app.db import db
 from sqlalchemy.orm import mapper
 from app.person.person.model.person_dto import PersonDto
 
+
 class PersonEntity(db.Model):
 
     __tablename__ = "person"
@@ -15,25 +16,15 @@ class PersonEntity(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey("role.id"))
 
     # many to one
-    document_type = db.relationship(
-        "DocumentTypeEntity", 
-        back_populates="person")
-    
-    role = db.relationship(
-        "RoleEntity", 
-        back_populates="person")
+    document_type = db.relationship("DocumentTypeEntity", back_populates="person")
+    role = db.relationship("RoleEntity", back_populates="person")
 
-    # many to many --> group
-    groups = db.relationship(
-        "GroupEntity",
-        primaryjoin="and_(PersonEntity.institutional_mail == PersonGroupEntity.institutional_mail, PersonGroupEntity.cancelled==False, PersonGroupEntity.state=='in_process')", 
-        secondary="person_group", 
-        lazy="joined")
-    
+    # many to many
+    person_group = db.relationship("PersonGroupEntity", back_populates="person")
     projects = db.relationship("ProjectEntity", secondary="project_person")
 
     def start_mapper():
         mapper(PersonDto, PersonEntity)
-        
+
     def __repr__(self) -> str:
-        return f"mail: {self.institutional_mail}, name: {self.names}, groups: {self.groups}"
+        return f"mail: {self.institutional_mail}, name: {self.names}, person_group: {self.person_group}"

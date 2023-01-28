@@ -15,22 +15,39 @@ from app.subject.person_group.service.person_group_service import (
 from app.subject.person_group.service.person_group_service import registered_person
 import os
 from cloudinary.uploader import upload, destroy
+from sqlalchemy.orm import joinedload
+from ....subject.person_group.entity.person_group_entity import PersonGroupEntity
 
 
 PersonEntity.start_mapper()
 
 
 def findAll():
-    persons = db.session.query(PersonEntity).all()
-    if not persons:
+    # persons = db.session.query(PersonEntity).all()
+    try:
+        persons = (
+            db.session.query(PersonEntity)
+            .options(
+                joinedload(PersonEntity.person_group).joinedload(
+                    PersonGroupEntity.group
+                )
+            )
+            .all()
+        )
+        return list_person_schema.dump(persons)
+    except NoResultFound:
         raise NoResultFound("no people registered yet")
-    return list_person_schema.dump(persons)
 
 
 def findOneByMail(mail):
     try:
         person = (
             db.session.query(PersonEntity)
+            .options(
+                joinedload(PersonEntity.person_group).joinedload(
+                    PersonGroupEntity.group
+                )
+            )
             .filter(PersonEntity.institutional_mail == mail)
             .one()
         )
@@ -58,7 +75,6 @@ def create(data):
                 code=person["code"],
                 document_type_id=person["document_type_id"],
                 role_id=person["role_id"],
-                img=person["img"],
             )
         )
         db.session.commit()
@@ -71,13 +87,11 @@ def create(data):
 
 def registerInCourse(data):
     try:
-        if get_person_of_subject(
-            data
-        ):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
+        if get_person_of_subject(data):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
             return {"msg": "the person is already registered in the matter"}
         else:
             exist = activateSubject(  # SI YA ESTABA PERO LA HABIA PERDIDO O CANCELADO ENTONCES ACTIVAMOS LA MATERIA
-                data["institutional_mail"], data["group_id"]
+                data["person_id"], data["group_id"]
             )
             if exist:
                 return "successfully registered person"
@@ -91,12 +105,17 @@ def get_person_of_subject(data):
     try:
         exist = (
             db.session.query(PersonEntity)
-            .filter(PersonEntity.institutional_mail == data["institutional_mail"])
+            .options(
+                joinedload(PersonEntity.person_group).joinedload(
+                    PersonGroupEntity.group
+                )
+            )
+            .filter(PersonEntity.institutional_mail == data["person_id"])
             .one()
         )
-        for info in exist.groups:
-            if info.id == data["group_id"] and info.subject_id == data["subject_id"]:
-                return True
+        for info in exist.person_group:
+            if info.group.id == data["group_id"] and info.group.subject_id == data["subject_id"] and info.cancelled == False:
+               return True
         return False
     except NoResultFound:
         raise NoResultFound(f"no exist person with email {data['institutional_mail']}")
@@ -111,8 +130,8 @@ def updateImage(file, mail):
         )
         print(image.img)
         if image.img != "":
-            url = image.img.split('/')
-            id_img = url[-1].split('.')
+            url = image.img.split("/")
+            id_img = url[-1].split(".")
             destroy(f"classroom-projects/{id_img[0]}")
         response = upload(file, folder="classroom-projects")
         image.img = response["url"]

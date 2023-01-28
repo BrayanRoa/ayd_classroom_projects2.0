@@ -21,7 +21,7 @@ def activateSubject(mail, group):
         db.session.query(PersonGroupEntity)
         .filter(
             and_(
-                PersonGroupEntity.institutional_mail == mail,
+                PersonGroupEntity.person_id == mail,
                 PersonGroupEntity.group_id == group,
             )
         )
@@ -43,7 +43,7 @@ def changeStateOfSubject(mail, group, state):
             db.session.query(PersonGroupEntity)
             .filter(
                 and_(
-                    PersonGroupEntity.institutional_mail == mail,
+                    PersonGroupEntity.person_id == mail,
                     PersonGroupEntity.group_id == group,
                 )
             )
@@ -65,15 +65,17 @@ def changeStateOfSubject(mail, group, state):
 
 def registered_person(data):
     try:
+        print(data)
         validate_data = person_group_schema.load(data)
         db.session.add(
             PersonGroupDTO(
                 group_id=validate_data["group_id"],
-                institutional_mail=validate_data["institutional_mail"],
+                person_id=validate_data["person_id"],
                 cancelleb=False,
                 state="in_process",
             )
         )
+        print('AJA')
         db.session.commit()
         return data
     except Exception as error:

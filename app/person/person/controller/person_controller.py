@@ -81,7 +81,7 @@ def get_person_by_mail(mail):
         description: Identifier person
 
     definitions:
-       Person:
+       LookPerson:
         type: object
         properties:
           institutional_mail:
@@ -99,16 +99,25 @@ def get_person_by_mail(mail):
             properties:
               name:
                 type: string
-          groups:
+          person_group:
             type: object
             properties:
-              name: 
+              cancelled:
+                type: boolean
+              state:
                 type: string
-              subject:
+              group:
                 type: object
                 properties:
+                  id:
+                    type: number
                   name: 
                     type: string
+                  subject:
+                    type: object
+                    properties:
+                      name: 
+                        type: string
           role:
             type: object
             properties:
@@ -119,7 +128,7 @@ def get_person_by_mail(mail):
       200:
         description: One person by institutional_mail
         schema:
-          $ref: '#/definitions/Person'
+          $ref: '#/definitions/LookPerson'
     """
     try:
         return jsonify({"person": findOneByMail(mail)}), 200
@@ -153,16 +162,6 @@ def get_all_teachers():
             properties:
               name:
                 type: string
-          groups:
-            type: object
-            properties:
-              name: 
-                type: string
-              subject:
-                type: object
-                properties:
-                  name: 
-                    type: string
           role:
             type: object
             properties:
@@ -206,8 +205,6 @@ def create_person():
             type: string
           code:
             type: string
-          img:
-            type: string
           document_type_id:
             type: number   
           role_id:
@@ -225,7 +222,7 @@ def create_person():
     except Exception as error:
         return jsonify({"msg": error.args})
 
-
+#* TODO: 👀 ACOMODARLO
 @person.route("/register_person_in_course", methods=["POST"])
 def register_person_in_course():
     """Register person in group
@@ -247,7 +244,7 @@ def register_person_in_course():
        PersonGroupInfo:
         type: object
         properties:
-          institutional_mail:
+          person_id:
             type: string
           subject_id:
             type: string

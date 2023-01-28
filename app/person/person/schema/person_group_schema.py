@@ -9,12 +9,14 @@ def validate_email(email):
 
 class PersonGroupSchema(ma.Schema):
     
-    institutional_mail=fields.Email(
+    id = fields.Integer()
+    person_id=fields.Email(
         validate=validate_email
     )
     group_id=fields.Integer()
-    subject_id = fields.String()
     cancelled=fields.Boolean()
+    subject_id = fields.String()
+    state = fields.String()
     
 person_subject_group = PersonGroupSchema()
 persons_subject_group = PersonGroupSchema(many=True)

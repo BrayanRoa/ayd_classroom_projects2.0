@@ -11,7 +11,7 @@ def get_all_person_group():
     except Exception as error:
         return jsonify({"msg": error.args}), 404
 
-
+#* TODO: 👀 ACOMODAR - YA NO ES INSTITUTIONAL_MAIL ES PERSON_ID Y VER QUE MAS A ACOMODAR
 @persons_groups.route("/change_state_subject/<mail>/<group>/<state>", methods=["PATCH"])
 def change_state_subject(mail, group, state):
     """Cancel or approve person group

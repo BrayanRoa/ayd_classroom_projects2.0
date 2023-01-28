@@ -46,14 +46,12 @@ def findOneByMail(term):
                     PersonGroupEntity.group
                 )
             )
-            .filter(
-                or_(PersonEntity.institutional_mail == term, PersonEntity.code == term)
-            )
+            .filter(or_(PersonEntity.institutional_mail == term, PersonEntity.code == term))
             .one()
         )
         return person_schema_out.dump(person)
     except NoResultFound:
-        raise NoResultFound(f"The person with search term {term} does not exist")
+        raise NoResultFound(f"No person found with search term {term}")
 
 
 def findTeachers():
@@ -87,9 +85,7 @@ def create(data):
 
 def registerInCourse(data):
     try:
-        if get_person_of_subject(
-            data
-        ):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
+        if get_person_of_subject(data):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
             return {"msg": "the person is already registered in the matter"}
         else:
             exist = activateSubject(  # SI YA ESTABA PERO LA HABIA PERDIDO O CANCELADO ENTONCES ACTIVAMOS LA MATERIA
@@ -116,12 +112,8 @@ def get_person_of_subject(data):
             .one()
         )
         for info in exist.person_group:
-            if (
-                info.group.id == data["group_id"]
-                and info.group.subject_id == data["subject_id"]
-                and info.cancelled == False
-            ):
-                return True
+            if info.group.id == data["group_id"] and info.group.subject_id == data["subject_id"] and info.cancelled == False:
+               return True
         return False
     except NoResultFound:
         raise NoResultFound(f"no exist person with email {data['institutional_mail']}")
@@ -134,7 +126,6 @@ def updateImage(file, mail):
             .filter(PersonEntity.institutional_mail == mail)
             .one()
         )
-        print(image.img)
         if image.img != "":
             url = image.img.split("/")
             id_img = url[-1].split(".")

@@ -9,10 +9,10 @@ def validate_mail(email):
 class PersonGroupSchema(ma.Schema):
 
     id = fields.Integer()
-    person_id = fields.String()
+    person_id = fields.String(validate=validate_mail)
     group_id = fields.Integer()
     cancelled = fields.Boolean()
-    state = fields.String(required=True, validate=validate.OneOf(['in_process', 'approved', 'cancelleb']))
+    state = fields.String(required=True, validate=validate.OneOf(['in_process', 'approved', 'cancelled']))
     person = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code', 'institutional_mail'))
     group = fields.Nested('GroupSchema', only=('id', 'name', 'subject'))
     subject_id = fields.String()

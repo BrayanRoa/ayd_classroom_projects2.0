@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from ..service.person_group_service import findAll, changeStateOfSubject
 
 persons_groups = Blueprint("person_group", __name__)
@@ -11,47 +11,40 @@ def get_all_person_group():
     except Exception as error:
         return jsonify({"msg": error.args}), 404
 
-#* TODO: 👀 ACOMODAR - YA NO ES INSTITUTIONAL_MAIL ES PERSON_ID Y VER QUE MAS A ACOMODAR
-@persons_groups.route("/change_state_subject/<mail>/<group>/<state>", methods=["PATCH"])
-def change_state_subject(mail, group, state):
-    """Cancel or approve person group
+
+@persons_groups.route("/change_state_subject", methods=["PATCH"])
+def change_state_subject():
+    """Cancel or approve person group ✅
     ---
     tags:
       - Person
-      
-    parameters:
-      - name: mail
-        in: path
-        type: string
-        required: true
-        description: Identifier person
-
-      - name: group
-        in: path
-        type: number
-        required: true
-        description: Identifier group
-
-      - name: state
-        in: path
-        type: string
-        required: true
-        description: state group - (approve or cancel)
         
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/PersonGroupUpdate'
+          
     definitions:
-       SubjectGroup:
+       PersonGroupUpdate:
         type: object
         properties:
+          person_id:
+            type: string
+          group_id: 
+            type: number
           state:
             type: string
     
     responses:
       200:
-        description: Get all people in a group
+        description: changed status successfully
         schema:
-          $ref: '#/definitions/SubjectGroup'
+          $ref: '#/definitions/PersonGroupUpdate'
     """
     try:
-        return jsonify({"state": changeStateOfSubject(mail, group, state)})
+        data = request.get_json()
+        return jsonify({"state": changeStateOfSubject(data)})
     except Exception as error:
         return jsonify({"msg": error.args}), 404

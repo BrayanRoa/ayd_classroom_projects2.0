@@ -7,7 +7,7 @@ document_type = Blueprint('document_type', __name__)
 
 @document_type.route('/', methods=['GET'])
 def get_all_documents_type():
-    """Get a list of all types of documents
+    """Get a list of all types of documents ✅
     ---
     tags:
       - Document Type
@@ -46,7 +46,7 @@ def get_all_documents_type():
     
 @document_type.route('/create', methods=['POST'])
 def create_document_type():
-    """add a new document type
+    """add a new document type ✅
     ---
     tags:
       - Document Type
@@ -79,7 +79,7 @@ def create_document_type():
       
 @document_type.route('/<id>', methods=['PATCH'])
 def update_document_type(id):
-    """update docuemnt type
+    """update docuemnt type ✅
       ---
       tags:
         - Document Type

@@ -37,26 +37,27 @@ def activateSubject(mail, group):
     return activate
 
 
-def changeStateOfSubject(mail, group, state):
+def changeStateOfSubject(data):
     try:
+        info = person_group_schema.load(data)
         person = (
             db.session.query(PersonGroupEntity)
             .filter(
                 and_(
-                    PersonGroupEntity.person_id == mail,
-                    PersonGroupEntity.group_id == group,
+                    PersonGroupEntity.person_id == info['person_id'],
+                    PersonGroupEntity.group_id == info['group_id'],
                 )
             )
             .one()
         )
-        if state == "cancel":
+        if info['state'] == "cancelled":
             person.cancelled = True
-            person.state = state
-        elif state == "approve":
+            person.state = info['state']
+        elif info['state'] == "approved":
             person.cancelled = False
-            person.state = state
+            person.state = info['state']
         db.session.commit()
-        return f"subject successfully {state}"
+        return f"subject successfully {info['state']}"
     except NoResultFound as error:
         raise NoResultFound("check the person's mail or group")
     except Exception as error:
@@ -65,7 +66,6 @@ def changeStateOfSubject(mail, group, state):
 
 def registered_person(data):
     try:
-        print(data)
         validate_data = person_group_schema.load(data)
         db.session.add(
             PersonGroupDTO(
@@ -75,7 +75,6 @@ def registered_person(data):
                 state="in_process",
             )
         )
-        print('AJA')
         db.session.commit()
         return data
     except Exception as error:

@@ -58,7 +58,7 @@ def get_all_persons():
 
 @person.route("/<term>", methods=["GET"])
 def get_person_by_mail(term):
-    """get person by institutional mail ✅
+    """get person by institutional mail or code✅
     ---
     tags:
       - Person
@@ -116,7 +116,7 @@ def get_person_by_mail(term):
 
     responses:
       200:
-        description: One person by institutional_mail
+        description: One person by institutional_mail or code
         schema:
           $ref: '#/definitions/LookPerson'
     """
@@ -128,7 +128,7 @@ def get_person_by_mail(term):
 
 @person.route("/get_teachers", methods=["GET"])
 def get_all_teachers():
-    """Returning list all teacher
+    """Returning list all teacher ✅
     ---
     tags:
       - Person
@@ -212,10 +212,10 @@ def create_person():
     except Exception as error:
         return jsonify({"msg": error.args})
 
-#* TODO: 👀 ACOMODARLO
+
 @person.route("/register_person_in_course", methods=["POST"])
 def register_person_in_course():
-    """Register person in group
+    """Register person in group ✅
     ---
     tags:
       - Person
@@ -258,7 +258,7 @@ def register_person_in_course():
 
 @person.route("/upload_image/<mail>", methods=["PATCH"])
 def upload_image(mail):
-    """Update a person's profile picture
+    """Update a person's profile picture ✅
     ---
     tags:
       - Person
@@ -282,6 +282,7 @@ def upload_image(mail):
       if "file" not in request.files:
         return jsonify({"msg": "there is no file in the request"}), 400
       my_file = request.files["file"]
+      print(my_file)
       return jsonify({"URL":updateImage(my_file, mail)})
     except Exception as error:
       return jsonify({"msg": error.args})

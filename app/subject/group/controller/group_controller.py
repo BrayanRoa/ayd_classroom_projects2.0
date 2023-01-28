@@ -14,7 +14,7 @@ def get_all_groups():
 
 @group.route("/<group>")
 def get_all_person_of_subject(group):
-    """Get all people in a group
+    """Get all people in a group ✅
     ---
     tags:
       - Group
@@ -27,7 +27,7 @@ def get_all_person_of_subject(group):
         description: Identifier group
 
     definitions:
-       SubjectGroup:
+       ListPersonOfGroup:
         type: object
         properties:
           id:
@@ -36,25 +36,40 @@ def get_all_person_of_subject(group):
             type: string
           number_of_students:
             type: number
-          persons:
+          person_group:
+            type: object
+            properties:
+              cancelled:
+                type: boolean
+              state:
+                type: string
+              person:
+                type: object
+                properties:                
+                  code:
+                    type: string
+                  name:
+                    type: string
+                  lastnames:
+                    type: string
+                  institutional_mail:
+                    type: string
+          subject:
             type: object
             properties:
               code:
                 type: string
               name:
                 type: string
-              lastnames:
-                type: string
-          subject:
-            type: string
           subject_id:
             type: string
+
 
     responses:
       200:
         description: Get all people in a group
         schema:
-          $ref: '#/definitions/SubjectGroup'
+          $ref: '#/definitions/ListPersonOfGroup'
     """
     try:
         return jsonify({"persons": findPersonOfGroup(group)})
@@ -64,7 +79,7 @@ def get_all_person_of_subject(group):
 
 @group.route("/create", methods=["POST"])
 def create_group():
-    """add group to subject
+    """add group to subject ✅
     ---
     tags:
       - Group
@@ -95,6 +110,6 @@ def create_group():
     """
     try:
         data = request.get_json()
-        return jsonify({"group": create(data)})
+        return jsonify({"group": create(data)}), 201
     except Exception as error:
         return jsonify({"msg": error.args}), 404

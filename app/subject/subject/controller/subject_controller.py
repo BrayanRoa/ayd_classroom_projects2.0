@@ -88,7 +88,7 @@ def get_one_subject(code):
 
 @subject.route("/create", methods=["POST"])
 def create_subject():
-    """add a new subject
+    """add a new subject ✅
     ---
     tags:
       - Subject

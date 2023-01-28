@@ -9,8 +9,7 @@ class PersonGroupEntity(db.Model):
     __tablename__ = "person_group"
 
     id = db.Column(db.Integer, primary_key=True)
-    # institutional_mail = db.Column(db.String(100), db.ForeignKey('person.institutional_mail'), primary_key=True)
-    # group_id = db.Column(db.Integer, db.ForeignKey('group.id'), primary_key=True)
+
     person_id = db.Column(db.String(100), db.ForeignKey("person.institutional_mail"))
     person = db.relationship("PersonEntity", back_populates=("person_group"))
 

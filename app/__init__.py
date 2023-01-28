@@ -10,7 +10,7 @@ from app.subject.group.controller.group_controller import group
 from app.subject.subject.controller.subject_controller import subject
 from app.subject.person_group.controller.person_group_controller import persons_groups
 from app.subject.project.controller.project_controller import project
-from app.subject.project_person.controller.project_person_controller import project_person
+from app.subject.person_project.controller.person_project_controller import person_project
 from app.subject.tasks.controller.tasks_controller import task
 
 prefix=f"/api/v1"
@@ -58,7 +58,7 @@ def create_app(settings_module):
     app.register_blueprint(subject, url_prefix=f"{prefix}/subject")
     app.register_blueprint(persons_groups, url_prefix=f"{prefix}/person_group")
     app.register_blueprint(project, url_prefix=f"{prefix}/project")
-    app.register_blueprint(project_person, url_prefix=f"{prefix}/project_person")
+    app.register_blueprint(person_project, url_prefix=f"{prefix}/person_project")
     app.register_blueprint(task, url_prefix=f"{prefix}/task")
     
     return app

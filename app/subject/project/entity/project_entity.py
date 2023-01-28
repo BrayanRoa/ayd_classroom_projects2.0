@@ -12,17 +12,13 @@ class ProjectEntity(db.Model):
     description = db.Column(db.String(250), nullable=False)
     active = db.Column(db.Boolean, default=True)
     state = db.Column(db.String(50))
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
-    
     number_of_students = db.Column(db.Integer, default=0)
     full = db.Column(db.Boolean, default=False)
     
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     group = db.relationship('GroupEntity', back_populates='projects')
     
-    persons = db.relationship(
-        'PersonEntity',
-        secondary='project_person', 
-        viewonly=True)
+    person_project = db.relationship("PersonProjectEntity", back_populates=("project"))
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

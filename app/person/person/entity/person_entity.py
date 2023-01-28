@@ -21,8 +21,9 @@ class PersonEntity(db.Model):
 
     # many to many
     person_group = db.relationship("PersonGroupEntity", back_populates="person")
-    projects = db.relationship("ProjectEntity", secondary="project_person")
 
+    person_project = db.relationship('PersonProjectEntity', back_populates="person")
+     
     def start_mapper():
         mapper(PersonDto, PersonEntity)
 

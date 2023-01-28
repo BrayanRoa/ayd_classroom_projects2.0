@@ -1,18 +1,18 @@
 from flask import Blueprint, jsonify, request
-from ..service.project_person_service import findAll, registerPersonInProject, withdrawFromProject
+from ..service.person_project_service import findAll, registerPersonInProject, withdrawFromProject
 
-project_person = Blueprint('project_person', __name__)
+person_project = Blueprint('person_project', __name__)
 
 
-@project_person.route('/', methods=['GET'])
-def get_all_project_person():
+@person_project.route('/', methods=['GET'])
+def get_all_person_project():
     try:
-        return jsonify({'project_person':findAll()}), 200
+        return jsonify({'person_project':findAll()}), 200
     except Exception as error:
         return jsonify({'msg':error.args}), 404
     
 
-@project_person.route('/register_person_in_project', methods=['POST'])
+@person_project.route('/register_person_in_project', methods=['POST'])
 def register_person_in_project():
     """Register person in project
     ---
@@ -43,12 +43,12 @@ def register_person_in_project():
     """
     try:
         data = request.get_json()
-        return jsonify({'project_person':registerPersonInProject(data)}), 201
+        return jsonify({'person_project':registerPersonInProject(data)}), 201
     except Exception as error:
         return jsonify({'msg':error.args}), 404 
     
 
-@project_person.route('/withdraw_person_of_project', methods=['DELETE'])
+@person_project.route('/withdraw_person_of_project', methods=['DELETE'])
 def withdrawPersonOfProject():
     """abandon project
     ---

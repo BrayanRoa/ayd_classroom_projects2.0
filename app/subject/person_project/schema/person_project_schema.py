@@ -7,7 +7,7 @@ def validate_mail(mail):
         raise ValidationError("It is not a valid institutional email")
 
 
-class ProjectPersonSchema(ma.Schema):
+class PersonProjectSchema(ma.Schema):
 
     institutional_mail = fields.String(required=True, validate=validate_mail)
     project_id = fields.Integer(required=True)
@@ -17,5 +17,5 @@ class ProjectPersonSchema(ma.Schema):
         in_data['institutional_mail'] = in_data['institutional_mail'].lower().strip()
         return in_data
     
-project_person_schema = ProjectPersonSchema()
-list_project_person_schema = ProjectPersonSchema(many=True)
+person_project_schema = PersonProjectSchema()
+list_person_project_schema = PersonProjectSchema(many=True)

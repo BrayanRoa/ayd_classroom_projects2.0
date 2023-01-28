@@ -2,39 +2,39 @@ from app.db import db
 from sqlalchemy.exc import NoResultFound
 from marshmallow import ValidationError
 from sqlalchemy import and_
-from ..entity.project_person_entity import ProjectPersonEntity
-from ..schema.project_person_schema import (
-    list_project_person_schema,
-    project_person_schema,
+from ..entity.person_project_entity import PersonProjectEntity
+from ..schema.person_project_schema import (
+    list_person_project_schema,
+    person_project_schema,
 )
 from app.person.person.service.person_service import findOneByMail
 from app.subject.project.service.project_service import findOneProject
-from ..model.project_person_dto import ProjectPersonDTO
+from ..model.person_project_dto import PersonProjectDTO
 
-ProjectPersonEntity.start_mapper()
+PersonProjectEntity.start_mapper()
 
 
 def findAll():
-    project_person = db.session.query(ProjectPersonEntity).all()
-    if not project_person:
+    person_project = db.session.query(PersonProjectEntity).all()
+    if not person_project:
         raise NoResultFound("no project person registered yet")
-    return list_project_person_schema.dump(project_person)
+    return list_person_project_schema.dump(person_project)
 
 
 # * HARIA FALTA VALIDAR QUE LA PERSONA ESTE REGISTRADA EN ESA GRUPO Y EN ESA MATERIA
 def registerPersonInProject(data):
-    project_person = None
+    person_project = None
     try:
-        project_person = project_person_schema.load(data)
-        findOneByMail(project_person["institutional_mail"])
-        findOneProject(project_person["project_id"])
+        person_project = person_project_schema.load(data)
+        findOneByMail(person_project["institutional_mail"])
+        findOneProject(person_project["project_id"])
         existePersonInProject(
-            project_person["institutional_mail"], project_person["project_id"]
+            person_project["institutional_mail"], person_project["project_id"]
         )
         db.session.add(
-            ProjectPersonDTO(
-                institutional_mail=project_person["institutional_mail"],
-                project_id=project_person["project_id"],
+            PersonProjectDTO(
+                institutional_mail=person_project["institutional_mail"],
+                project_id=person_project["project_id"],
             )
         )
         db.session.commit()
@@ -47,14 +47,14 @@ def registerPersonInProject(data):
 # * POR EL MOMENTO VOY A ELIMINAR TOTALMENTE DE LA TABLA A LA PERSONA
 def withdrawFromProject(data):
     try:
-        project_person = project_person_schema.load(data)
+        person_project = person_project_schema.load(data)
         data = (
-            db.session.query(ProjectPersonEntity)
+            db.session.query(PersonProjectEntity)
             .filter(
                 and_(
-                    ProjectPersonEntity.institutional_mail
-                    == project_person["institutional_mail"],
-                    ProjectPersonEntity.project_id == project_person["project_id"],
+                    PersonProjectEntity.institutional_mail
+                    == person_project["institutional_mail"],
+                    PersonProjectEntity.project_id == person_project["project_id"],
                 )
             )
             .one()
@@ -70,11 +70,11 @@ def withdrawFromProject(data):
 
 def existePersonInProject(mail, project):
     exist = (
-        db.session.query(ProjectPersonEntity)
+        db.session.query(PersonProjectEntity)
         .filter(
             and_(
-                ProjectPersonEntity.institutional_mail == mail,
-                ProjectPersonEntity.project_id == project,
+                PersonProjectEntity.institutional_mail == mail,
+                PersonProjectEntity.project_id == project,
             )
         )
         .first()

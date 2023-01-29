@@ -165,7 +165,7 @@ def create_project():
 """
 @project.route("/change_state_project/<id>/<state>")
 def change_state_project(id, state):
-    """change the status of a project
+    """change the status of a project ✅
     ---
     tags:
       - Projects

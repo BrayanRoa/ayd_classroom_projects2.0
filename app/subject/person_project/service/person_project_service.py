@@ -21,19 +21,21 @@ def findAll():
     return list_person_project_schema.dump(person_project)
 
 
-# * HARIA FALTA VALIDAR QUE LA PERSONA ESTE REGISTRADA EN ESA GRUPO Y EN ESA MATERIA
 def registerPersonInProject(data):
     person_project = None
     try:
         person_project = person_project_schema.load(data)
-        findOneByMail(person_project["institutional_mail"])
-        findOneProject(person_project["project_id"])
+        findOneByMail(person_project["person_id"])
+        info_project = findOneProject(person_project["project_id"])
+        
+        if info_project['number_of_students'] <= len(info_project['person_project']):
+            raise ValueError('There are no slots available on this project')
         existePersonInProject(
-            person_project["institutional_mail"], person_project["project_id"]
+            person_project["person_id"], person_project["project_id"]
         )
         db.session.add(
             PersonProjectDTO(
-                institutional_mail=person_project["institutional_mail"],
+                person_id=person_project["person_id"],
                 project_id=person_project["project_id"],
             )
         )
@@ -52,8 +54,8 @@ def withdrawFromProject(data):
             db.session.query(PersonProjectEntity)
             .filter(
                 and_(
-                    PersonProjectEntity.institutional_mail
-                    == person_project["institutional_mail"],
+                    PersonProjectEntity.person_id
+                    == person_project["person_id"],
                     PersonProjectEntity.project_id == person_project["project_id"],
                 )
             )
@@ -73,7 +75,7 @@ def existePersonInProject(mail, project):
         db.session.query(PersonProjectEntity)
         .filter(
             and_(
-                PersonProjectEntity.institutional_mail == mail,
+                PersonProjectEntity.person_id == mail,
                 PersonProjectEntity.project_id == project,
             )
         )
@@ -81,3 +83,6 @@ def existePersonInProject(mail, project):
     )
     if exist:
         raise Exception("the person is already registered in this project")
+
+
+#* TODO: BUSCAR UN PROYECTO EN LA TABLA INTERMEDIA, CON ESO PUEDO VER EL ARRAY DE PERSONAS QUE HAY AHI

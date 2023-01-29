@@ -25,7 +25,7 @@ class ProjectSchema(ma.Schema):
     )  # * 👀 ESTE CAMBIA CUANDO YA SE TIENE LA CANTIDAD DE ESTUDIANTES MAXIMA
 
     group_id = fields.Integer(required=True)
-    person_project = fields.Nested("PersonProjectSchema", many=True)
+    person_project = fields.Nested("PersonProjectSchema", many=True, only=('person',))
 
     @post_load
     def lower_names(self, in_data, **kwargs):

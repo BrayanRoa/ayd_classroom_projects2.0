@@ -11,10 +11,10 @@ def get_all_person_project():
     except Exception as error:
         return jsonify({'msg':error.args}), 404
     
-
+# * HARIA FALTA VALIDAR QUE LA PERSONA ESTE REGISTRADA EN ESA GRUPO Y EN ESA MATERIA
 @person_project.route('/register_person_in_project', methods=['POST'])
 def register_person_in_project():
-    """Register person in project
+    """Register person in project 🛑🧑‍🔧
     ---
     tags:
       - Projects
@@ -30,7 +30,7 @@ def register_person_in_project():
        RegisterPersonProject:
         type: object
         properties:
-          institutional_mail:
+          person_id:
             type: string
           project_id:
             type: number
@@ -50,7 +50,7 @@ def register_person_in_project():
 
 @person_project.route('/withdraw_person_of_project', methods=['DELETE'])
 def withdrawPersonOfProject():
-    """abandon project
+    """abandon project ✅
     ---
     tags:
       - Projects
@@ -66,7 +66,7 @@ def withdrawPersonOfProject():
        RegisterPersonProject:
         type: object
         properties:
-          institutional_mail:
+          person_id:
             type: string
           project_id:
             type: number

@@ -9,12 +9,13 @@ def validate_mail(mail):
 
 class PersonProjectSchema(ma.Schema):
 
-    institutional_mail = fields.String(required=True, validate=validate_mail)
+    person_id = fields.String(required=True, validate=validate_mail)
     project_id = fields.Integer(required=True)
+    person = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code', 'institutional_mail'))
 
     @post_load
     def lower_names(self, in_data, **kwargs):
-        in_data['institutional_mail'] = in_data['institutional_mail'].lower().strip()
+        in_data['person_id'] = in_data['person_id'].lower().strip()
         return in_data
     
 person_project_schema = PersonProjectSchema()

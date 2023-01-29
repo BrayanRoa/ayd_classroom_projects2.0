@@ -7,7 +7,7 @@ subject = Blueprint("subject", __name__)
 
 @subject.route("/", methods=["GET"])
 def get_all_subject():
-    """returns the list of all subjects with their groups
+    """returns the list of all subjects with their groups ✅
     ---
     tags:
       - Subject
@@ -44,7 +44,7 @@ def get_all_subject():
 
 @subject.route("/<code>", methods=["GET"])
 def get_one_subject(code):
-    """Search for a subject by code
+    """Search for a subject by code ✅
     ---
     tags:
       - Subject

@@ -1,16 +1,16 @@
-
 from flask import Blueprint, jsonify, request
 from app.person.role.service.role_service import findAll, create
 
-role = Blueprint('role', __name__)
+role = Blueprint("role", __name__)
 
-@role.route('/', methods=['GET'])
+
+@role.route("/", methods=["GET"])
 def get_all_roles():
-    """Returning list all Roles
+    """Returning list all Roles ✅
     ---
     tags:
       - Roles
-      
+
     definitions:
        Roles:
         type: object
@@ -18,7 +18,7 @@ def get_all_roles():
           id:
             type: number
           names:
-            type: string  
+            type: string
           person:
             type: object
             properties:
@@ -29,8 +29,8 @@ def get_all_roles():
               names:
                 type: string
               lastnames:
-                type: string            
-          
+                type: string
+
     responses:
       200:
         description: A list of roles
@@ -38,14 +38,14 @@ def get_all_roles():
           $ref: '#/definitions/Roles'
     """
     try:
-        return jsonify({'roles':findAll()}), 200
+        return jsonify({"roles": findAll()}), 200
     except Exception as error:
-        return jsonify({'msg':error.args}), 404
-    
-    
-@role.route('/create', methods=['POST'])
+        return jsonify({"msg": error.args}), 404
+
+
+@role.route("/create", methods=["POST"])
 def create_role():
-    """add a new role
+    """add a new role ✅
     ---
     tags:
       - Roles
@@ -71,6 +71,6 @@ def create_role():
     """
     try:
         data = request.get_json()
-        return jsonify({'role':create(data)}), 201
+        return jsonify({"role": create(data)}), 201
     except Exception as error:
-        return jsonify({'msg':error.args}), 404
+        return jsonify({"msg": error.args}), 404

@@ -282,7 +282,6 @@ def upload_image(mail):
       if "file" not in request.files:
         return jsonify({"msg": "there is no file in the request"}), 400
       my_file = request.files["file"]
-      print(my_file)
       return jsonify({"URL":updateImage(my_file, mail)})
     except Exception as error:
       return jsonify({"msg": error.args})

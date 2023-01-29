@@ -18,18 +18,14 @@ class ProjectSchema(ma.Schema):
     * proposal = PROPUESTA
     """
     state = fields.String(
-        validate=validate.OneOf(
-            ["in_process", "finished", "proposal", "on_hold"]
-        ),
+        validate=validate.OneOf(["in_process", "finished", "proposal", "on_hold"]),
     )
     full = fields.Boolean(
         default=False
     )  # * 👀 ESTE CAMBIA CUANDO YA SE TIENE LA CANTIDAD DE ESTUDIANTES MAXIMA
 
     group_id = fields.Integer(required=True)
-    persons = fields.Nested(
-        "PersonSchema", only=("names", "lastnames", "code"), many=True
-    )
+    person_project = fields.Nested("PersonProjectSchema", many=True)
 
     @post_load
     def lower_names(self, in_data, **kwargs):
@@ -40,4 +36,4 @@ class ProjectSchema(ma.Schema):
 
 project_schema = ProjectSchema()
 list_project_schema = ProjectSchema(many=True)
-list_project_without_persons_schema = ProjectSchema(many=True, exclude=('persons',))
+list_project_without_persons_schema = ProjectSchema(many=True, exclude=("person_project",))

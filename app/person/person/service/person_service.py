@@ -142,7 +142,6 @@ def updateImage(file, mail):
 
 # * TODO: VOY A UTILIZAR MEJOR CLOUDINARY POR TEMAS DE COSTOS
 # def UpdateImage(file,mail):
-#     print(file, mail)
 #     s3.upload_file(file.filename, "ayd-project", file.filename)
 #     s3.put_object_acl(Bucket="ayd-project", Key=file.filename, ACL='public-read')
 #     url = s3.generate_presigned_post("ayd-project", file.filename)

@@ -6,12 +6,13 @@ from ..service.project_service import (
     changeStateProject,
 )
 
+
 project = Blueprint("project", __name__)
 
 
 @project.route("/", methods=["GET"])
 def get_all_projects():
-    """Get all projects without persons
+    """Get all projects without persons ✅
     ---
     tags:
       - Projects
@@ -51,7 +52,7 @@ def get_all_projects():
 
 @project.route("/<id>", methods=["GET"])
 def get_one_projects(id):
-    """Get one project with all people
+    """Get one project with all people ✅
     ---
     tags:
       - Projects
@@ -114,7 +115,7 @@ def get_one_projects(id):
 """
 @project.route("/create", methods=["POST"])
 def create_project():
-    """add a new project
+    """add a new project ✅
     ---
     tags:
       - Projects

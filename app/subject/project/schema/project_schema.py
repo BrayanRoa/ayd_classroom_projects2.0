@@ -24,6 +24,8 @@ class ProjectSchema(ma.Schema):
         default=False
     )  # * 👀 ESTE CAMBIA CUANDO YA SE TIENE LA CANTIDAD DE ESTUDIANTES MAXIMA
 
+    advance = fields.Nested('AdvanceSchema', many=True, only=('name', 'description', 'link')) 
+    
     group_id = fields.Integer(required=True)
     person_project = fields.Nested("PersonProjectSchema", many=True, only=('person',))
 

@@ -6,7 +6,7 @@ class AdvanceSchema(ma.Schema):
     id = fields.Integer()
     name = fields.String(required=True)
     description = fields.String(required=True)
-    link = fields.String(required=True)
+    link = fields.String()
     state = fields.Boolean()
     delivery_date = fields.Date(
         required=True,
@@ -14,7 +14,7 @@ class AdvanceSchema(ma.Schema):
     )
     
     project_id = fields.Integer(required=True)
-    project = fields.Nested("ProjectSchema")
+    project = fields.Nested("ProjectSchema", only=('name',))
     
 advance_schema = AdvanceSchema()
 list_advance_schema = AdvanceSchema(many=True)

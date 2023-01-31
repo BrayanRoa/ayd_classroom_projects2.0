@@ -22,10 +22,10 @@ def findAll():
 
 def findByGroupId(id):
     try:
-        task = db.session.query(TaskEntity).filter(TaskEntity.group_id == id).all()
+        task = db.session.query(TaskEntity).filter_by(group_id=id).all()
+        if len(task) == 0:
+            raise NoResultFound(f"Task with id {id} not found")
         return list_task_schema.dump(task)
-    except NoResultFound:
-        raise NoResultFound(f"Task with id {id} not found")
     except Exception as error:
         raise Exception(error.args)
 
@@ -58,3 +58,22 @@ def createTask(data):
         return task
     except ValidationError as error:
         raise ValidationError(error.messages)
+
+
+def update(id, data):
+    try:
+        task = db.session.query(TaskEntity).filter_by(id=id).one()
+        if "name" in data:
+            task.name = data.get("name")
+        if "description" in data:
+            task.description = data.get("description")
+        if "expired_date" in data:
+            task.expired_date = data.get("expired_date")
+        if "group_id" in data:
+            task.group_id = data.get("group_id")
+        db.session.commit()
+        return f"task with id {id} updated successfully"
+    except ValidationError as error:
+        raise ValidationError(error.args)
+    except Exception as error:
+        raise Exception(error.args)

@@ -7,6 +7,7 @@ class TaskSchema(ma.Schema):
     id = fields.Integer()
     name = fields.String(required=True)
     description = fields.String(required=True)
+    state = fields.Boolean()
     create_at = fields.Date()
     expired_date = fields.Date(
         required=True,

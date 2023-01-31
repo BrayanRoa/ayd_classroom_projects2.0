@@ -3,8 +3,8 @@ from ..service.tasks_service import (
   findAll, 
   findByGroupId, 
   deleteTask, 
-  createTask
-)
+  createTask,
+  update)
 
 task = Blueprint("task", __name__)
 
@@ -19,7 +19,7 @@ def get_all_task():
 
 @task.route("/task_of_group/<group>", methods=["GET"])
 def task_of_group(group):
-    """Get all task of one group
+    """Get all task of one group ✅
     ---
     tags:
       - Tasks
@@ -59,7 +59,7 @@ def task_of_group(group):
 
 @task.route("/delete_task/<id>", methods=["DELETE"])
 def delete_task(id):
-    """Delete one task by id
+    """Delete one task by id ✅
     ---
     tags:
       - Tasks
@@ -91,7 +91,7 @@ def delete_task(id):
 
 @task.route("/create", methods=["POST"])
 def create_task():
-    """add a new task in group
+    """add a new task in group ✅
     ---
     tags:
       - Tasks
@@ -102,7 +102,7 @@ def create_task():
         required: true
         schema:
           $ref: '#/definitions/TaskInfo'
-          
+
     definitions:
        TaskInfo:
         type: object
@@ -116,7 +116,7 @@ def create_task():
             format: date
           group_id:
             type: number
-          
+
     responses:
       201:
         description: a new task
@@ -130,4 +130,49 @@ def create_task():
         return jsonify({"msg": error.args}), 404
 
 
-# * TODO: ACTUALIZAR TAREA?
+@task.route('/update/<id>', methods=['PATCH'])
+def update_task(id):
+    """update task of group ✅
+    ---
+    tags:
+      - Tasks
+      
+    description:
+      fields that will not be updated should not be sent
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: identifier group
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/TaskUpdate'
+
+    definitions:
+       TaskUpdate:
+        type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          expired_date:
+            type: string
+            format: date
+          group_id:
+            type: number
+
+    responses:
+      200:
+        description: task updated
+        schema:
+          $ref: '#/definitions/TaskUpdate'
+    """
+    try:
+        data = request.get_json()
+        return jsonify({"msg": update(id, data)}), 200
+    except Exception as error:
+        return jsonify({"msg": error.args}), 404

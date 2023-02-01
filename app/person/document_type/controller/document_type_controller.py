@@ -79,7 +79,7 @@ def create_document_type():
       
 @document_type.route('/<id>', methods=['PATCH'])
 def update_document_type(id):
-    """update docuemnt type ✅
+    """update document type ✅
       ---
       tags:
         - Document Type

@@ -13,7 +13,7 @@ class PersonGroupSchema(ma.Schema):
     group_id = fields.Integer()
     cancelled = fields.Boolean()
     state = fields.String(required=True, validate=validate.OneOf(['in_process', 'approved', 'cancelled']))
-    person = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code', 'institutional_mail'))
+    person = fields.Nested('PersonSchema', only=('names', 'lastnames', 'code', 'institutional_mail', 'role'))
     group = fields.Nested('GroupSchema', only=('id', 'name', 'subject'))
     subject_id = fields.String()
 

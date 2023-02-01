@@ -63,4 +63,4 @@ def findOneProject(id):
         project = db.session.query(ProjectEntity).filter(ProjectEntity.id == id).one()
         return project_schema.dump(project)
     except NoResultFound:
-        raise NoResultFound(f"there is no project with id {id}")
+        raise NoResultFound(f"project with id {id} not found")

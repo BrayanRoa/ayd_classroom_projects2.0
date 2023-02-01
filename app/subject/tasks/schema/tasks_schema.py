@@ -5,12 +5,11 @@ import datetime
 class TaskSchema(ma.Schema):
 
     id = fields.Integer()
-    name = fields.String(required=True)
-    description = fields.String(required=True)
+    name = fields.String()
+    description = fields.String()
     state = fields.Boolean()
     create_at = fields.Date()
     expired_date = fields.Date(
-        required=True,
         error_messages={"invalid": "example date: year-month-day"}
     )
     group_id = fields.Integer()

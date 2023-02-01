@@ -4,6 +4,7 @@ from ..service.project_service import (
     create,
     findOneProject,
     changeStateProject,
+    updateProject
 )
 
 
@@ -203,10 +204,45 @@ def change_state_project(id, state):
         return jsonify({"msg": error.args}), 404
 
 
-#* TODO: UPDATE PROJECT
-# @project.route('/propose_project/<state>', methods=['POST'])
-# def propose_project(state):
-#     try:
-#         return jsonify({'proposal':})
-#     except Exception as error:
-#         return jsonify({'msg':error.args}), 400
+@project.route('/update_project/<id>', methods=['PATCH'])
+def update_project(id):
+    """update project ✅
+    ---
+    tags:
+      - Projects
+      
+    description:
+      fields that will not be updated should not be sent
+
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: identifier group
+      - name: body
+        in: body
+        schema:
+          $ref: '#/definitions/ProjectUpdate'
+
+    definitions:
+       ProjectUpdate:
+        type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          number_of_students:
+            type: number
+
+    responses:
+      200:
+        description: project updated
+        schema:
+          $ref: '#/definitions/ProjectUpdate'
+    """
+    try:
+        data = request.get_json()
+        return jsonify({'msg':updateProject(id, data)})
+    except Exception as error:
+        return jsonify({'msg':error.args}), 404

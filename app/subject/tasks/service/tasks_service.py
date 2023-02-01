@@ -62,6 +62,7 @@ def createTask(data):
 
 def update(id, data):
     try:
+        task_schema.load(data)
         task = db.session.query(TaskEntity).filter_by(id=id).one()
         if "name" in data:
             task.name = data.get("name")

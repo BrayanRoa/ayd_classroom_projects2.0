@@ -5,10 +5,10 @@ from marshmallow import fields, validate, post_load
 class ProjectSchema(ma.Schema):
 
     id = fields.Integer()
-    name = fields.String(required=True, validate=validate.Length(min=3, max=50))
-    description = fields.String(required=True)
+    name = fields.String(validate=validate.Length(min=3, max=50))
+    description = fields.String()
     active = fields.Boolean(default=True)
-    number_of_students = fields.Integer(required=True)
+    number_of_students = fields.Integer()
 
     """
     * estados permitidos
@@ -26,13 +26,15 @@ class ProjectSchema(ma.Schema):
 
     advance = fields.Nested('AdvanceSchema', many=True, only=('name', 'description', 'link')) 
     
-    group_id = fields.Integer(required=True)
+    group_id = fields.Integer()
     person_project = fields.Nested("PersonProjectSchema", many=True, only=('person',))
 
     @post_load
     def lower_names(self, in_data, **kwargs):
-        in_data["name"] = in_data["name"].lower().strip()
-        in_data["description"] = in_data["description"].lower().strip()
+        if "name" in in_data:
+            in_data["name"] = in_data["name"].lower().strip()
+        if "description" in in_data:
+            in_data["description"] = in_data["description"].lower().strip()
         return in_data
 
 

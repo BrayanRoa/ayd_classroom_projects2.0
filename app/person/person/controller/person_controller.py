@@ -58,7 +58,7 @@ def get_all_persons():
 
 @person.route("/<term>", methods=["GET"])
 def get_person_by_mail(term):
-    """get person by institutional mail or code✅
+    """get person by institutional mail or code ✅
     ---
     tags:
       - Person

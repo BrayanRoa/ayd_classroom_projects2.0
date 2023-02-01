@@ -13,7 +13,7 @@ from app.subject.project.controller.project_controller import project
 from app.subject.person_project.controller.person_project_controller import person_project
 from app.subject.tasks.controller.tasks_controller import task
 from app.subject.advances.controller.advances_controller import advance
-
+from app.auth.controller.auth_controller import auth
 
 prefix=f"/api/v1"
 
@@ -63,6 +63,7 @@ def create_app(settings_module):
     app.register_blueprint(person_project, url_prefix=f"{prefix}/person_project")
     app.register_blueprint(task, url_prefix=f"{prefix}/task")
     app.register_blueprint(advance, url_prefix=f"{prefix}/advance")
+    app.register_blueprint(auth, url_prefix=f"{prefix}/auth")
     
     return app
     

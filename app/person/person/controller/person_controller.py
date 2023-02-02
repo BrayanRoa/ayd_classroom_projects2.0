@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request, g
 from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
-from ....auth.user.user_dto import UserDtO
 from app.person.person.service.person_service import (
     findAll,
     findOneByMail,
@@ -9,6 +8,8 @@ from app.person.person.service.person_service import (
     registerInCourse,
     updateImage,
 )
+from ....auth.user.user_dto import UserDtO
+from ....util.resource_cloudinary import allowed_photo_file, ALLOWED_PHOTO_EXTENSIONS
 import os
 
 person = Blueprint("person", __name__)
@@ -278,6 +279,7 @@ def register_person_in_course():
 
 
 @person.route("/upload_image/<mail>", methods=["PATCH"])
+@jwt_required()
 def upload_image(mail):
     """Update a person's profile picture ✅
     ---
@@ -303,18 +305,11 @@ def upload_image(mail):
         if "file" not in request.files:
             return jsonify({"msg": "there is no file in the request"}), 400
         my_file = request.files["file"]
+        if not allowed_photo_file(my_file.filename):
+            return jsonify({"msg": f"invalid image extension - allowed: {ALLOWED_PHOTO_EXTENSIONS}"})
         return jsonify({"URL": updateImage(my_file, mail)})
     except Exception as error:
         return jsonify({"msg": error.args})
 
 
 # * UPDATE PERSON
-
-# @person.route('/excel_person', methods=['POST'])
-# def excel_person():
-#     if 'file' not in request.files:
-#         return jsonify({'msg':'there is no file in the request'}), 400
-#     excel = request.files['file']
-#     excel.save(os.path.join('uploads', excel.filename))
-#     createPersonExcel(excel.filename)
-#     return 'ok'

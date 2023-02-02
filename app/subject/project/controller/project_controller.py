@@ -1,4 +1,7 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from ....auth.user.user_dto import UserDtO
+from ....util.resource_cloudinary import allowed_excel_file, ALLOWED_FILE_EXTENSIONS
 from ..service.project_service import (
     findAll,
     create,
@@ -7,10 +10,16 @@ from ..service.project_service import (
     updateProject,
     registerExcelOfProjects
 )
-from ....util.resource_cloudinary import allowed_excel_file, ALLOWED_FILE_EXTENSIONS
 
 project = Blueprint("project", __name__)
 
+
+@project.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
 
 @project.route("/", methods=["GET"])
 def get_all_projects():

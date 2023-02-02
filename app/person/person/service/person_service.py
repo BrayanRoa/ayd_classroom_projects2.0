@@ -2,21 +2,21 @@ from app.db import db
 # from app.ext import s3
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
+from cloudinary.uploader import upload, destroy
+from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
 from app.person.person.entity.person_entity import PersonEntity
+from ..model.person_dto import PersonDto
+from ....subject.person_group.entity.person_group_entity import PersonGroupEntity
+from app.subject.person_group.service.person_group_service import registered_person
 from app.person.person.schema.person_schema import (
     list_person_schema,
     person_schema,
     person_schema_out,
 )
-from ..model.person_dto import PersonDto
 from app.subject.person_group.service.person_group_service import (
     activateSubject,
 )
-from app.subject.person_group.service.person_group_service import registered_person
-from cloudinary.uploader import upload, destroy
-from sqlalchemy.orm import joinedload
-from ....subject.person_group.entity.person_group_entity import PersonGroupEntity
-from sqlalchemy import or_
 
 PersonEntity.start_mapper()
 
@@ -85,6 +85,7 @@ def create(data):
 
 def registerInCourse(data):
     try:
+        findOneByMail(data["person_id"])
         if get_person_of_subject(data):  # SOLO ME MUESTRA LOS GRUPOS QUE LA PERSONA TENGA ACTIVOS CANCELLD:FALSE Y STATE: IN_PROCESS
             return {"msg": "the person is already registered in the matter"}
         else:

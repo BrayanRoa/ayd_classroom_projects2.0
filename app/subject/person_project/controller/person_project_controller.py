@@ -1,7 +1,18 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from ..service.person_project_service import findAll, registerPersonInProject, withdrawFromProject
+from ....auth.user.user_dto import UserDtO
+
 
 person_project = Blueprint('person_project', __name__)
+
+
+@person_project.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
 
 
 @person_project.route('/', methods=['GET'])

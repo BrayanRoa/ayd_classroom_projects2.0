@@ -1,8 +1,18 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
+from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
 from ..service.person_group_service import findAll, changeStateOfSubject
+from ....auth.user.user_dto import UserDtO
 
 persons_groups = Blueprint("person_group", __name__)
 
+
+
+@persons_groups.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
 
 @persons_groups.route("/", methods=["GET"])
 def get_all_person_group():

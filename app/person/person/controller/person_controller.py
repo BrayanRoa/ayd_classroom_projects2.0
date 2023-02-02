@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request, g
 from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
+from ....auth.user.user_dto import UserDtO
+from ....util.resource_cloudinary import allowed_photo_file, ALLOWED_PHOTO_EXTENSIONS
 from app.person.person.service.person_service import (
     findAll,
     findOneByMail,
@@ -8,9 +10,7 @@ from app.person.person.service.person_service import (
     registerInCourse,
     updateImage,
 )
-from ....auth.user.user_dto import UserDtO
-from ....util.resource_cloudinary import allowed_photo_file, ALLOWED_PHOTO_EXTENSIONS
-import os
+
 
 person = Blueprint("person", __name__)
 
@@ -306,7 +306,11 @@ def upload_image(mail):
             return jsonify({"msg": "there is no file in the request"}), 400
         my_file = request.files["file"]
         if not allowed_photo_file(my_file.filename):
-            return jsonify({"msg": f"invalid image extension - allowed: {ALLOWED_PHOTO_EXTENSIONS}"})
+            return jsonify(
+                {
+                    "msg": f"invalid image extension - allowed: {ALLOWED_PHOTO_EXTENSIONS}"
+                }
+            )
         return jsonify({"URL": updateImage(my_file, mail)})
     except Exception as error:
         return jsonify({"msg": error.args})

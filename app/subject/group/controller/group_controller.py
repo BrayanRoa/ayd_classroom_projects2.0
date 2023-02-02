@@ -1,7 +1,17 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
+from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
 from ..service.group_service import findAll, findPersonOfGroup, create
+from ....auth.user.user_dto import UserDtO
 
 group = Blueprint("group", __name__)
+
+
+@group.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
 
 
 @group.route("/", methods=["GET"])
@@ -13,6 +23,7 @@ def get_all_groups():
 
 
 @group.route("/<group>")
+@jwt_required()
 def get_all_person_of_subject(group):
     """Get all people in a group ✅
     ---
@@ -45,7 +56,7 @@ def get_all_person_of_subject(group):
                 type: string
               person:
                 type: object
-                properties:                
+                properties:
                   code:
                     type: string
                   name:
@@ -78,6 +89,7 @@ def get_all_person_of_subject(group):
 
 
 @group.route("/create", methods=["POST"])
+@jwt_required()
 def create_group():
     """add group to subject ✅
     ---
@@ -109,6 +121,11 @@ def create_group():
           $ref: '#/definitions/GroupInfo'
     """
     try:
+        if g.user_info["role"] != "docente":
+            return (
+                jsonify({"unauthorized": "you don't have the necessary permissions"}),
+                401,
+            )
         data = request.get_json()
         return jsonify({"group": create(data)}), 201
     except Exception as error:

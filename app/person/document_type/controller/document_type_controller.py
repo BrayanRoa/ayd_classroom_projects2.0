@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request, g
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from ....auth.user.user_dto import UserDtO
 from app.person.document_type.service.document_type_service import (
     findAll,
     create,
     update,
 )
-from flask_jwt_extended import verify_jwt_in_request, get_jwt
-from ....auth.user.user_dto import UserDtO
 
 document_type = Blueprint("document_type", __name__)
 
@@ -16,6 +16,11 @@ def before_request():
         token = get_jwt()
         user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
         g.user_info = user_info.__str__()
+        if g.user_info["role"] != "docente":
+            return (
+                jsonify({"unauthorized": "you don't have the necessary permissions"}),
+                401,
+            )
 
 
 @document_type.route("/", methods=["GET"])

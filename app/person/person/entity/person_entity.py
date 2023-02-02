@@ -1,7 +1,7 @@
 from app.db import db
 from sqlalchemy.orm import mapper
 from app.person.person.model.person_dto import PersonDto
-
+from datetime import datetime
 
 class PersonEntity(db.Model):
 
@@ -24,6 +24,9 @@ class PersonEntity(db.Model):
 
     person_project = db.relationship('PersonProjectEntity', back_populates="person")
      
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
     def start_mapper():
         mapper(PersonDto, PersonEntity)
 

@@ -1,7 +1,17 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
 from app.person.role.service.role_service import findAll, create
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from ....auth.user.user_dto import UserDtO
+
 
 role = Blueprint("role", __name__)
+
+@role.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
 
 
 @role.route("/", methods=["GET"])

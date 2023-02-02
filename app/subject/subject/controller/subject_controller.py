@@ -1,8 +1,17 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
 from ..service.subject_service import findAll, create, findOneByCode
-
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from ....auth.user.user_dto import UserDtO
 
 subject = Blueprint("subject", __name__)
+
+
+@subject.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
 
 
 @subject.route("/", methods=["GET"])
@@ -11,7 +20,7 @@ def get_all_subject():
     ---
     tags:
       - Subject
-      
+
     definitions:
        Subject:
         type: object
@@ -19,7 +28,7 @@ def get_all_subject():
           code:
             type: string
           name:
-            type: string  
+            type: string
           group:
             type: object
             properties:
@@ -28,8 +37,8 @@ def get_all_subject():
               name:
                 type: string
               number_of_students:
-                type: number            
-          
+                type: number
+
     responses:
       200:
         description: A list of Subject
@@ -48,7 +57,7 @@ def get_one_subject(code):
     ---
     tags:
       - Subject
-      
+
     parameters:
       - name: code
         in: path
@@ -63,7 +72,7 @@ def get_one_subject(code):
           code:
             type: string
           name:
-            type: string  
+            type: string
           group:
             type: object
             properties:
@@ -72,7 +81,7 @@ def get_one_subject(code):
               name:
                 type: string
               number_of_students:
-                type: number 
+                type: number
 
     responses:
       200:
@@ -99,7 +108,7 @@ def create_subject():
         required: true
         schema:
           $ref: '#/definitions/SubjectInfo'
-          
+
     definitions:
        SubjectInfo:
         type: object
@@ -108,7 +117,7 @@ def create_subject():
             type: string
           name:
             type: string
-          
+
     responses:
       201:
         description: a new subject
@@ -116,10 +125,15 @@ def create_subject():
           $ref: '#/definitions/SubjectInfo'
     """
     try:
+        if g.user_info["role"] != "docente":
+            return (
+                jsonify({"unauthorized": "you don't have the necessary permissions"}),
+                401,
+            )
         data = request.get_json()
         return jsonify({"subject": create(data)}), 201
     except Exception as error:
         return jsonify({"msg": error.args}), 404
-      
-      
-#* TODO: UPDATE SUBJECT
+
+
+# * TODO: UPDATE SUBJECT

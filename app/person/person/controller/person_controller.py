@@ -1,4 +1,6 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, g
+from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
+from ....auth.user.user_dto import UserDtO
 from app.person.person.service.person_service import (
     findAll,
     findOneByMail,
@@ -12,13 +14,22 @@ import os
 person = Blueprint("person", __name__)
 
 
+@person.before_request
+def before_request():
+    if verify_jwt_in_request():
+        token = get_jwt()
+        user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
+        g.user_info = user_info.__str__()
+
+
 @person.route("/", methods=["GET"])
+@jwt_required()
 def get_all_persons():
     """Returning list all persons ✅
     ---
     tags:
       - Person
-      
+
     definitions:
        Person:
         type: object
@@ -51,6 +62,11 @@ def get_all_persons():
           $ref: '#/definitions/Person'
     """
     try:
+        if g.user_info["role"] != "docente":
+            return (
+                jsonify({"unauthorized": "you don't have the necessary permissions"}),
+                401,
+            )
         return jsonify({"persons": findAll()}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404
@@ -62,7 +78,7 @@ def get_person_by_mail(term):
     ---
     tags:
       - Person
-      
+
     parameters:
       - name: term
         in: path
@@ -101,12 +117,12 @@ def get_person_by_mail(term):
                 properties:
                   id:
                     type: number
-                  name: 
+                  name:
                     type: string
                   subject:
                     type: object
                     properties:
-                      name: 
+                      name:
                         type: string
           role:
             type: object
@@ -165,6 +181,11 @@ def get_all_teachers():
           $ref: '#/definitions/Person'
     """
     try:
+        if g.user_info["role"] != "docente":
+            return (
+                jsonify({"unauthorized": "you don't have the necessary permissions"}),
+                401,
+            )
         return jsonify({"teachers": findTeachers()}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404
@@ -196,7 +217,7 @@ def create_person():
           code:
             type: string
           document_type_id:
-            type: number   
+            type: number
           role_id:
             type: number
 
@@ -222,14 +243,14 @@ def register_person_in_course():
 
     description:
       when a person is registered, the state must be 'in_process'
-      
+
     parameters:
       - name: body
         in: body
         required: true
         schema:
           $ref: '#/definitions/PersonGroupInfo'
-          
+
     definitions:
        PersonGroupInfo:
         type: object
@@ -238,7 +259,7 @@ def register_person_in_course():
             type: string
           subject_id:
             type: string
-          group_id: 
+          group_id:
             type: number
           state:
             type: string
@@ -273,21 +294,21 @@ def upload_image(mail):
         description: The uploaded file data
         required: true
         type: file
-          
+
     responses:
       200:
         description: A File
     """
     try:
-      if "file" not in request.files:
-        return jsonify({"msg": "there is no file in the request"}), 400
-      my_file = request.files["file"]
-      return jsonify({"URL":updateImage(my_file, mail)})
+        if "file" not in request.files:
+            return jsonify({"msg": "there is no file in the request"}), 400
+        my_file = request.files["file"]
+        return jsonify({"URL": updateImage(my_file, mail)})
     except Exception as error:
-      return jsonify({"msg": error.args})
+        return jsonify({"msg": error.args})
 
 
-#* UPDATE PERSON
+# * UPDATE PERSON
 
 # @person.route('/excel_person', methods=['POST'])
 # def excel_person():

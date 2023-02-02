@@ -8,6 +8,7 @@ from ..schema.project_schema import (
     list_project_without_persons_schema,
 )
 from ..model.project_dto import ProjectDTO
+import pandas as pd
 
 ProjectEntity.start_mapper()
 
@@ -57,9 +58,20 @@ def changeStateProject(id, state):
         raise Exception(f"project with id {id} not found")
 
 
-# * TODO: TERMINAR
-def registerExcelOfProjects():
-    return ""
+def registerExcelOfProjects(file):
+    try:
+        data = pd.read_excel(file)
+        msg = []
+        for i, row in data.iterrows():
+            if not existProject(row["name"].lower()):
+                create(row.to_dict())
+            else:
+                msg.append(row["name"].lower())
+        if len(msg) != 0:
+            return f"there are already projects with these names in the database: {msg}"
+        return "list of successfully registered projects"     
+    except Exception as e:
+        raise Exception(e.args)
 
 
 def findOneProject(id):
@@ -88,3 +100,11 @@ def updateProject(id, data):
     #     raise ValidationError(error.args)
     except NoResultFound:
         raise NoResultFound(f"project with id {id} not found")
+
+
+def existProject(name):
+    try:
+        db.session.query(ProjectEntity).filter(ProjectEntity.name == name).one()
+        return True
+    except NoResultFound:
+        return False

@@ -8,9 +8,14 @@ CLOUD_NAME = os.environ["CLOUD_NAME"]
 API_KEY = os.environ["API_KEY"]
 API_SECRET = os.environ["API_SECRET"]
 ALLOWED_PHOTO_EXTENSIONS = {"png", "jpg", "jpeg"}
+ALLOWED_FILE_EXTENSIONS = {"csv", "xlsx", "xls", "xlsm"}
+
 
 cloudinary.config(cloud_name=CLOUD_NAME, api_key=API_KEY, api_secret=API_SECRET)
 
 
 def allowed_photo_file(filename):
-    return ("." in filename and filename.split(".")[-1] in ALLOWED_PHOTO_EXTENSIONS)
+    return "." in filename and filename.split(".")[-1] in ALLOWED_PHOTO_EXTENSIONS
+
+def allowed_excel_file(filename):
+    return "." in filename and filename.split(".")[-1] in ALLOWED_FILE_EXTENSIONS

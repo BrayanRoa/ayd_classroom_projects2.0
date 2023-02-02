@@ -4,9 +4,10 @@ from ..service.project_service import (
     create,
     findOneProject,
     changeStateProject,
-    updateProject
+    updateProject,
+    registerExcelOfProjects
 )
-
+from ....util.resource_cloudinary import allowed_excel_file, ALLOWED_FILE_EXTENSIONS
 
 project = Blueprint("project", __name__)
 
@@ -244,5 +245,18 @@ def update_project(id):
     try:
         data = request.get_json()
         return jsonify({'msg':updateProject(id, data)})
+    except Exception as error:
+        return jsonify({'msg':error.args}), 404
+
+
+@project.route("/excel_projects", methods=["POST"])
+def load_projects():
+    try:
+        if "file" not in request.files:
+          return jsonify({"msg":"there is no file in the request"}), 400 
+        my_file = request.files["file"]
+        if not allowed_excel_file(my_file.filename):
+          return jsonify({"msg":f"invalid file extension - allowed: {ALLOWED_FILE_EXTENSIONS}"})
+        return jsonify({'msg':registerExcelOfProjects(my_file)})
     except Exception as error:
         return jsonify({'msg':error.args}), 404

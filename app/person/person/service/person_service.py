@@ -1,5 +1,5 @@
 from app.db import db
-from app.ext import s3
+# from app.ext import s3
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
 from app.person.person.entity.person_entity import PersonEntity

@@ -23,11 +23,6 @@ def findAll():
 
 def findPersonOfGroup(group):
     try:
-        # persons = (
-        #     db.session.query(GroupEntity)
-        #     .filter(GroupEntity.id == group)
-        #     .one()
-        # )
         persons = (db.session.query(GroupEntity).options(
                 joinedload(GroupEntity.person_group).joinedload(
                     PersonGroupEntity.person

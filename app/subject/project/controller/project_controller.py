@@ -8,7 +8,7 @@ from ..service.project_service import (
     findOneProject,
     changeStateProject,
     updateProject,
-    registerExcelOfProjects
+    registerExcelOfProjects,
 )
 
 project = Blueprint("project", __name__)
@@ -20,6 +20,7 @@ def before_request():
         token = get_jwt()
         user_info = UserDtO(institutional_mail=token["sub"], role=token["role"])
         g.user_info = user_info.__str__()
+
 
 @project.route("/", methods=["GET"])
 def get_all_projects():
@@ -124,6 +125,8 @@ def get_one_projects(id):
 * CAMBIA DE ON_HOLD A IN_PROCCESS CUANDO EL PROFESOR APRUEBE EL PROYECTO QUE EL ALUMNO PROPUSO
 * CAMBIA FINISHED CUANDO EL PROYECTO SE CULMINO CON EXITO
 """
+
+
 @project.route("/create", methods=["POST"])
 def create_project():
     """add a new project ✅
@@ -169,11 +172,6 @@ def create_project():
         return jsonify({"msg": error.args}), 400
 
 
-# * TODO: VALIDAR QUE SOLO EL DOCENTE PUEDA HACER ESTO
-"""
-* EL DOCENTE CAMBIA LOS ESTADOS DEL PROYECTO
-* PUEDE CAMBIARLOS A IN_PROCESS Y FINISHED
-"""
 @project.route("/change_state_project/<id>/<state>")
 def change_state_project(id, state):
     """change the status of a project ✅
@@ -209,18 +207,23 @@ def change_state_project(id, state):
         description: change state of project
     """
     try:
+        if g.user_info["role"] != "role":
+            return (
+                jsonify({"unauthorized": "you don't have the necessary permissions"}),
+                401,
+            )
         return jsonify({"msg": changeStateProject(id, state)}), 200
     except Exception as error:
         return jsonify({"msg": error.args}), 404
 
 
-@project.route('/update_project/<id>', methods=['PATCH'])
+@project.route("/update_project/<id>", methods=["PATCH"])
 def update_project(id):
     """update project ✅
     ---
     tags:
       - Projects
-      
+
     description:
       fields that will not be updated should not be sent
 
@@ -253,19 +256,36 @@ def update_project(id):
     """
     try:
         data = request.get_json()
-        return jsonify({'msg':updateProject(id, data)})
+        return jsonify({"msg": updateProject(id, data)})
     except Exception as error:
-        return jsonify({'msg':error.args}), 404
+        return jsonify({"msg": error.args}), 404
 
 
 @project.route("/excel_projects", methods=["POST"])
 def load_projects():
+    """load excel from projects ✅
+    ---
+    tags:
+      - Projects
+    parameters:
+      - name: file
+        in: formData
+        description: The uploaded file data
+        required: true
+        type: file
+
+    responses:
+      200:
+        description: A File
+    """
     try:
         if "file" not in request.files:
-          return jsonify({"msg":"there is no file in the request"}), 400 
+            return jsonify({"msg": "there is no file in the request"}), 400
         my_file = request.files["file"]
         if not allowed_excel_file(my_file.filename):
-          return jsonify({"msg":f"invalid file extension - allowed: {ALLOWED_FILE_EXTENSIONS}"})
-        return jsonify({'msg':registerExcelOfProjects(my_file)})
+            return jsonify(
+                {"msg": f"invalid file extension - allowed: {ALLOWED_FILE_EXTENSIONS}"}
+            )
+        return jsonify({"msg": registerExcelOfProjects(my_file)})
     except Exception as error:
-        return jsonify({'msg':error.args}), 404
+        return jsonify({"msg": error.args}), 404
